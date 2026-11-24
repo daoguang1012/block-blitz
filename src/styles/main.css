@@ -1,8 +1,18 @@
+@import './ui.css';
+
 :root {
   color-scheme: light;
-  font-family: system-ui, sans-serif;
-  background: #f5f8fc;
+  font-family:
+    'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui,
+    sans-serif;
+  background: #d7f4ed;
   color: #173d36;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html,
@@ -11,11 +21,14 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #scene-root {
   position: fixed;
   inset: 0;
+  z-index: 0;
 }
 
 #scene-root canvas {
@@ -25,13 +38,12 @@ body {
 }
 
 #ui-root {
-  position: relative;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
 }
 
-.app-version {
-  position: fixed;
-  right: calc(env(safe-area-inset-right) + 1rem);
-  bottom: calc(env(safe-area-inset-bottom) + 1rem);
-  font-size: 0.875rem;
-  font-variant-numeric: tabular-nums;
+#ui-root > :not(.bb-ui) {
+  pointer-events: auto;
 }
