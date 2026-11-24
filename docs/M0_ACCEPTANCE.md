@@ -3,7 +3,8 @@
 - **验收日期**：2026-11-24
 - **验收提交**：`69b3c26`（`main`）
 - **审查员**：Astra（`codex / gpt-6.2-astra`，`reasoningEffort: xhigh`）
-- **自动化验收结论**：**PASS**（0 Blocker / 0 Major / 1 Minor；待产品负责人完成 M0-4 电脑家宽 ↔ 手机 4G 真机验证后正式关闭 M0）
+- **自动化验收结论**：**PASS**（0 Blocker / 0 Major / 1 Minor）
+- **真机验收结论（M0-4）**：**PASS**（关闭代理并开启浏览器 WebRTC 后跨网直连成功，RTT `41.4 ms`，`reliable` 100/100 乱序 0，`unreliable` 100/100 乱序 2；M0 里程碑正式关闭）
 
 ## 1. GDD §12 与 M0 子任务核对
 
