@@ -12,7 +12,7 @@
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #9 | [M1] 世界碰撞、射线检测与第一人称玩家控制器（M1-2） | Sol（`xhigh`） | `node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-2-sol-collision-raycast-controller` | `feat/9-collision-raycast-controller` | — | 🛠️ 开发中 |
+| #9 | [M1] 世界碰撞、射线检测与第一人称玩家控制器（M1-2） | Sol（`xhigh`） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-2-sol-collision-raycast-controller`（已完成） | `feat/9-collision-raycast-controller` | [#13](https://github.com/daoguang1012/block-blitz/pull/13)（`db1f834`，150 单测 ✅） | ⏸️ 代码已完成提 PR，待 Astra 额度恢复后执行 R1 审查 |
 | #10 | [M1] Block Plaza 地图数据、画质分档渲染器与静态场景几何合并（M1-3） | Neon（作者）/ Astra（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-3-neon-block-plaza-renderer-scene`<br>R1 审查（中断）：`node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-3-astra-review-r1` | `feat/10-block-plaza-scene-builder` | [#11](https://github.com/daoguang1012/block-blitz/pull/11)（`54e8fe5`，CI ✅，135 单测 ✅） | ⚠️ 本地四项检查与 CI 已过，Astra R1 审查途中遇 Codex 额度触顶中断 |
 | #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（`high`） | `node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-5-neon-touch-input-hud-pause` | `feat/12-touch-input-battle-hud` | — | 🛠️ 开发中 |
 
