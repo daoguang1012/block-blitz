@@ -4,22 +4,22 @@
 
 ## 当前状态
 
-- **当前里程碑**：M0 骨架 & 风险验证（定时等待中：Codex 额度预计 14:23 恢复，已设定 **2026-11-24 14:28:30 (+08:00)** 自动唤醒继续推进）
+- **当前里程碑**：M0 骨架 & 风险验证（进行中：定时唤醒已生效，M0-2 Sol 收尾续跑中 + M0-3 PR #5 Astra 审查中）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ （M0-1 已上线生效）
-- **下一步**：14:28:30 定时任务触发后，保持原模型配置（Sol = `codex/gpt-6.2-sol`，Astra = `codex/gpt-6.2-astra`）：① `t3_thread_send` 恢复 Sol 原线程完成 #3 并提 PR；② 新建 `delegate_task` 派 Astra 审查 PR #5 → 合并两项 PR → Astra（`xhigh`）M0 里程碑验收 → 找产品负责人真机测试（M0-4）
+- **下一步**：等待 Astra 完成 PR #5 审查并等待 Sol 提交 #3 的 PR → 审查合并两项 PR → 派 Astra（`xhigh`）做 M0 里程碑验收 → 请产品负责人真机测试（M0-4）
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #3 | [M0] PeerJS 联机 Spike 与 Transport 抽象 | Sol（`codex / gpt-6.2-sol`） | `node:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-2-sol-net-spike`（线程：`thread:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-2-sol-net-spike`） | `feat/3-net-spike` | — | ⏰ 待 14:28 唤醒续跑（代码与双通道实测已就绪，差报告与提 PR） |
-| #4 | [M0] 菜单 UI 外壳、Hash 路由与本地设置 | Neon（作者）/ Astra（审查） | 作者：`node:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-3-neon-ui-shell`（已完成）<br>原审查（已中断）：`node:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-3-astra-review-r1` | `feat/4-menu-ui-shell` | [#5](https://github.com/daoguang1012/block-blitz/pull/5)（CI ✅） | ⏰ 待 14:28 重新派发 Astra 第 1 轮审查 |
+| #3 | [M0] PeerJS 联机 Spike 与 Transport 抽象 | Sol（`codex / gpt-6.2-sol`） | `node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Athread-send%3Am0-2-sol-net-spike-resume` | `feat/3-net-spike` | — | 续跑收尾中（写报告、四项检查、提 PR） |
+| #4 | [M0] 菜单 UI 外壳、Hash 路由与本地设置 | Neon（作者）/ Astra（审查） | 作者：`node:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-3-neon-ui-shell`（已完成）<br>审查：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Adelegate-task%3Am0-3-astra-review-r1-retry` | `feat/4-menu-ui-shell` | [#5](https://github.com/daoguang1012/block-blitz/pull/5)（CI ✅） | Astra 第 1 轮审查中 |
 
 ## 里程碑总览
 
 | 里程碑 | 状态 | 验收报告 |
 |---|---|---|
-| M0 骨架 & 风险验证 | ⏰ 等待额度恢复（14:28 自动续跑） | — |
+| M0 骨架 & 风险验证 | 🔄 进行中（1/3 已合入，1/3 审查中，1/3 收尾中） | — |
 | M1 单机核心 | ⏳ | — |
 | M2 联机 MVP | ⏳ | — |
 | M3 内容 | ⏳ | — |
@@ -28,11 +28,11 @@
 
 ## 已完成（最近 10 条）
 
-- 2026-11-24 按产品负责人指示保留原模型阵容，创建一次性定时任务于 `2026-11-24 14:28:30+08:00`（3h15m 后）自动恢复推进
+- 2026-11-24 14:28 定时任务按期触发：已唤醒 Sol 原线程继续完成 #3，并新派 Astra 审查 PR #5
+- 2026-11-24 按产品负责人指示保留原模型阵容，创建一次性定时任务于 `2026-11-24 14:28:30+08:00` 自动恢复推进
 - 2026-11-24 Neon 完成 Issue #4（M0-3 菜单 UI 外壳）并提交 PR #5（CI 全绿，25/25 单测通过）
 - 2026-11-24 并行创建并派发 Issue #3（M0-2 联机 spike → Sol）与 Issue #4（M0-3 菜单 UI 外壳 → Neon）
 - 2026-11-24 PR #2（Issue #1 工程脚手架与部署管线）经 Astra 第 2 轮复审 APPROVE 后合并入 `main`，GitHub Pages 首次自动部署成功
-- 2026-11-24 Sol 完成 PR #2 第 1 轮审查修复（动态导入跨层拦截 + Pages 工作流最小权限拆分）
 
 ## 决策记录
 
@@ -46,4 +46,4 @@
 
 ## 阻塞 / 待用户处理
 
-- 无（已设置 2026-11-24 14:28:30+08:00 自动唤醒续跑，无需人工介入）
+- 无
