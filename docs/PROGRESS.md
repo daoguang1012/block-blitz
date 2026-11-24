@@ -4,15 +4,15 @@
 
 ## 当前状态
 
-- **当前里程碑**：M0 骨架 & 风险验证（M0-1、M0-3 已合入 `main`；仅剩 M0-2 PR #6 第 2 轮增量复审 + M0 里程碑验收，已设定时任务于 `19:33` 自动续跑）
-- **线上地址**：https://daoguang1012.github.io/block-blitz/ （M0-1、M0-3 已合入自动部署中）
-- **下一步**：`2026-11-24 19:33` 定时唤醒 → `gpt-6.2-astra` 复审 PR #6（R2 增量复审）→ 合并 PR #6 部署 Pages → `gpt-6.2-astra`（`xhigh`）执行 M0 里程碑验收 → 请产品负责人真机测试（M0-4）
+- **当前里程碑**：M0 骨架 & 风险验证（M0-1、M0-3 已合入 `main`；19:33 定时唤醒后已派发 Astra 进行 M0-2 PR #6 第 2 轮增量复审）
+- **线上地址**：https://daoguang1012.github.io/block-blitz/ （M0-1、M0-3 已上线生效）
+- **下一步**：等待 Astra 完成 PR #6 第 2 轮增量复审 → 合并 PR #6 部署 Pages → 派发 Astra（`xhigh`）执行 M0 里程碑验收 → 请产品负责人真机测试（M0-4）
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #3 | [M0] PeerJS 联机 Spike 与 Transport 抽象 | Sol（作者）/ Astra（复审） | 作者线程：`thread:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-2-sol-net-spike`<br>作者修复：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Athread-send%3Am0-2-sol-fix-r1`（已完成） | `feat/3-net-spike` | [#6](https://github.com/daoguang1012/block-blitz/pull/6)（`7911803`，CI ✅，36 单测 ✅） | ⏰ 第 1 轮 4 项修复已就绪，定于 `19:33` Codex 额度恢复后自动发起 Astra R2 增量复审 |
+| #3 | [M0] PeerJS 联机 Spike 与 Transport 抽象 | Sol（作者）/ Astra（复审） | 作者线程：`thread:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-2-sol-net-spike`<br>R2 复审：`node:delegated-task:command%3Amcp%3A179666c3-774b-4f30-b489-dced119d8ce4%3Adelegate-task%3Am0-2-astra-review-r2-retry-1933` | `feat/3-net-spike` | [#6](https://github.com/daoguang1012/block-blitz/pull/6)（`7911803`，CI ✅，36 单测 ✅） | 🔍 Astra 第 2 轮增量复审进行中 |
 
 ## 里程碑总览
 
