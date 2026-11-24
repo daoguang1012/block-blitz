@@ -4,16 +4,17 @@
 
 ## 当前状态
 
-- **当前里程碑**：M1 单机核心（Wave 1 #7 已一次审查通过合入 `main` `de20f4c`；Wave 2 已双线并行派发：Sol #9 碰撞/射线/控制器 + Neon #10 Block Plaza 地图与场景几何合并）
+- **当前里程碑**：M1 单机核心（高速三线并行推进中：Astra 审查 PR #11 Block Plaza 地图与渲染；Sol 开发 #9 碰撞/射线/控制器；Neon 开发 #12 触屏输入与战斗 HUD）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ ｜ 联机诊断页：https://daoguang1012.github.io/block-blitz/?spike=net
-- **下一步**：等待 Wave 2（#9、#10）完成并经 Astra 审查合入 → 双线并行派发 Wave 3（Sol：武器系统 + 移动靶模拟；Neon：触屏输入 + 战斗 HUD + 交叉单测）→ Wave 4 训练场端到端集成 → Astra `xhigh` M1 验收 → 请产品负责人真机试玩训练场
+- **下一步**：#9 与 PR #11 合入后派发 Sol 开发 M1-4（武器系统 + 移动靶模拟）→ #12 与 M1-4 合入后由 Sol 执行 M1-6（训练场端到端集成 + 视角武器模型 + 命中特效）同时 Neon 并行补齐碰撞/武器边界交叉单测 → Astra `xhigh` M1 验收 → 请产品负责人真机试玩训练场
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
 | #9 | [M1] 世界碰撞、射线检测与第一人称玩家控制器（M1-2） | Sol（`xhigh`） | `node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-2-sol-collision-raycast-controller` | `feat/9-collision-raycast-controller` | — | 🛠️ 开发中 |
-| #10 | [M1] Block Plaza 地图数据、画质分档渲染器与静态场景几何合并（M1-3） | Neon（`high`） | `node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-3-neon-block-plaza-renderer-scene` | `feat/10-block-plaza-scene-builder` | — | 🛠️ 开发中 |
+| #10 | [M1] Block Plaza 地图数据、画质分档渲染器与静态场景几何合并（M1-3） | Neon（作者）/ Astra（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-3-neon-block-plaza-renderer-scene`<br>R1 审查：`node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-3-astra-review-r1` | `feat/10-block-plaza-scene-builder` | [#11](https://github.com/daoguang1012/block-blitz/pull/11)（`54e8fe5`，135 单测 ✅） | 🔍 Astra 第 1 轮审查进行中 |
+| #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（`high`） | `node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-5-neon-touch-input-hud-pause` | `feat/12-touch-input-battle-hud` | — | 🛠️ 开发中 |
 
 ## M1 单机核心拆解计划
 
@@ -53,6 +54,7 @@
 
 | 日期 | 决策 | 理由 |
 |---|---|---|
+| 2026-11-24 | 画质设置运行时变更即时更新像素比（`pixelRatio`）与阴影开关，WebGL `antialias`（MSAA）于下次进入场景创建 `GameRenderer` 时生效 | WebGL 上下文创建后无法原地切换 MSAA，局中销毁重建渲染器会造成黑屏闪烁与纹理重建开销 |
 | 2026-11-24 | M2/M4 联机建连失败提示中必须显式加入「请检查是否开启了 VPN/代理软件或禁用了浏览器 WebRTC」引导 | M0-4 真机实测确认：开启代理或浏览器禁用 WebRTC 会直接阻断 P2P 打洞，恢复后 RTT 仅 41.4 ms |
 | 2026-11-24 | M1 拆分为 4 波共 6 个子任务（M1-1 接口先行 → M1-2/M1-3 并行 → M1-4/M1-5 并行 → M1-6 集成收口） | 严格遵循 `ORCHESTRATION.md` §3/§8 接口先行与文件零重叠原则，最大化 Sol 与 Neon 并行效率 |
 | 2026-11-24 | M0 验收检出的诊断页按钮高度 44 px（`net-spike.css`）作为 Minor 记录，M2 正式大厅 UI 直接统一采用 `UI_CONFIG.minTouchTargetPx`（56 px） | `?spike=net` 仅为开发诊断入口，主菜单与设置正式 UI 已全部满足 ≥ 56 px |
