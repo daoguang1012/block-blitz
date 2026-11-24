@@ -1,0 +1,147 @@
+.net-spike {
+  position: fixed;
+  z-index: 1;
+  inset: 0;
+  overflow-y: auto;
+  background: #f1f5f3;
+  color: #18382f;
+}
+
+.net-spike-content {
+  display: grid;
+  gap: 1rem;
+  max-width: 58rem;
+  margin-inline: auto;
+  padding: calc(env(safe-area-inset-top) + 1rem)
+    calc(env(safe-area-inset-right) + 1rem)
+    calc(env(safe-area-inset-bottom) + 1rem)
+    calc(env(safe-area-inset-left) + 1rem);
+}
+
+.net-spike h1,
+.net-spike h2,
+.net-spike p {
+  margin: 0;
+}
+
+.net-spike h1 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.net-spike h2 {
+  font-size: 1.125rem;
+}
+
+.net-spike header p + p {
+  margin-top: 0.25rem;
+}
+
+.net-spike-panel {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: clamp(0.75rem, 3vw, 1.25rem);
+  background: #fff;
+  border: 1px solid #c8d9d1;
+  border-radius: 0.75rem;
+}
+
+.net-spike-status {
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.net-spike-controls,
+.net-spike form,
+#spike-share-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#spike-share-row[hidden] {
+  display: none;
+}
+
+.net-spike button,
+.net-spike input:not([type='checkbox']) {
+  box-sizing: border-box;
+  min-height: 44px;
+  font: inherit;
+  border: 1px solid #74978a;
+  border-radius: 0.4rem;
+}
+
+.net-spike button {
+  padding: 0.45rem 0.8rem;
+  background: #e8f4ed;
+  color: inherit;
+  cursor: pointer;
+}
+
+.net-spike #spike-host {
+  background: #174b3b;
+  color: #fff;
+}
+
+.net-spike button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.net-spike :focus-visible {
+  outline: 2px solid #256e55;
+  outline-offset: 2px;
+}
+
+.net-spike input:not([type='checkbox']) {
+  min-width: 0;
+  padding-inline: 0.6rem;
+}
+
+#spike-room {
+  width: 5.4rem;
+  text-transform: uppercase;
+}
+
+#spike-share {
+  flex: 1 1 12rem;
+}
+
+.net-spike-weak {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+}
+
+.net-spike table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.net-spike th,
+.net-spike td {
+  padding: 0.4rem;
+  border-bottom: 1px solid #dbe7e1;
+}
+
+.net-spike ul,
+.net-spike ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-wrap: anywhere;
+}
+
+.net-spike li + li {
+  margin-top: 0.4rem;
+}
+
+.net-spike li div,
+#spike-log {
+  font-size: 0.875rem;
+}
