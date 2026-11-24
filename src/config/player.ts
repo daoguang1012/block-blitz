@@ -1,0 +1,16 @@
+export const PLAYER_CONFIG = {
+  maxHealth: 100,
+  regenDelaySeconds: 4,
+  regenHealthPerSecond: 15,
+  moveSpeed: 7,
+  airControlMultiplier: 0.6,
+  jumpHeight: 1.4,
+  dashDistance: 6,
+  dashDurationSeconds: 0.15,
+  dashCooldownSeconds: 3,
+  capsuleRadius: 0.4,
+  capsuleHeight: 1.8,
+  eyeHeight: 1.6,
+  respawnDelaySeconds: 3,
+  respawnInvulnerabilitySeconds: 2,
+} as const;
