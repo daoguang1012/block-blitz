@@ -79,3 +79,15 @@ export const UI_CONFIG = {
   volumeDecimals: 2,
   randomByteSpace: 256,
 } as const;
+
+export const HUD_CONFIG = {
+  hitMarkerDurationMs: 140,
+  headshotHitMarkerDurationMs: 220,
+  lowHealthThreshold: 0.3,
+  lowAmmoThreshold: 0.25,
+  cooldownDecimals: 1,
+  crosshairSizePx: 22,
+  hitMarkerSizePx: 26,
+  pauseButtonMinSizePx: UI_CONFIG.minTouchTargetPx,
+  weaponSlotCount: 3,
+} as const;
