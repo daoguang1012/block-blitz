@@ -4,22 +4,22 @@
 
 ## 当前状态
 
-- **当前里程碑**：M0 骨架 & 风险验证（进行中：M0-1 已上线；M0-2 已提 PR #6 审查中；M0-3 PR #5 第 1 轮修复中）
+- **当前里程碑**：M0 骨架 & 风险验证（进行中：M0-1 已上线；PR #6 与 PR #5 均在 Astra 并行审查中）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ （M0-1 已上线生效）
-- **下一步**：等待 Astra 完成 PR #6（#3）第 1 轮审查并等待 Neon 完成 PR #5（#4）修复后复审 → 合并两项 PR → 派 Astra（`xhigh`）做 M0 里程碑验收 → 请产品负责人真机测试（M0-4）
+- **下一步**：等待 Astra 完成 PR #6（#3）第 1 轮审查与 PR #5（#4）第 2 轮复审 → 合并两项 PR → 派 Astra（`xhigh`）做 M0 里程碑验收 → 请产品负责人真机测试（M0-4）
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
 | #3 | [M0] PeerJS 联机 Spike 与 Transport 抽象 | Sol（作者）/ Astra（审查） | 作者：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Athread-send%3Am0-2-sol-net-spike-resume`（已完成）<br>审查：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Adelegate-task%3Am0-2-astra-review-r1` | `feat/3-net-spike` | [#6](https://github.com/daoguang1012/block-blitz/pull/6)（CI ✅） | Astra 第 1 轮审查中 |
-| #4 | [M0] 菜单 UI 外壳、Hash 路由与本地设置 | Neon（`antigravity / gemini-4-neon`） | `node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Athread-send%3Am0-3-neon-fix-r1` | `feat/4-menu-ui-shell` | [#5](https://github.com/daoguang1012/block-blitz/pull/5) | 第 1 轮审查修复中 |
+| #4 | [M0] 菜单 UI 外壳、Hash 路由与本地设置 | Neon（作者）/ Astra（复审） | 作者：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Athread-send%3Am0-3-neon-fix-r1`（已完成）<br>复审：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Adelegate-task%3Am0-3-astra-review-r2` | `feat/4-menu-ui-shell` | [#5](https://github.com/daoguang1012/block-blitz/pull/5)（CI ✅） | Astra 第 2 轮复审中 |
 
 ## 里程碑总览
 
 | 里程碑 | 状态 | 验收报告 |
 |---|---|---|
-| M0 骨架 & 风险验证 | 🔄 进行中（1/3 已合入，2/3 审查/修复中） | — |
+| M0 骨架 & 风险验证 | 🔄 进行中（1/3 已合入，2/3 并行审查中） | — |
 | M1 单机核心 | ⏳ | — |
 | M2 联机 MVP | ⏳ | — |
 | M3 内容 | ⏳ | — |
@@ -28,10 +28,10 @@
 
 ## 已完成（最近 10 条）
 
-- 2026-11-24 Sol 完成 Issue #3（M0-2 PeerJS 联机 Spike 与 Transport 抽象）并提交 PR #6（CI 全绿，26/26 单测通过，含 `docs/NET_SPIKE.md`），已派发 Astra 审查
-- 2026-11-24 Astra 完成 PR #5 第 1 轮审查（REQUEST_CHANGES），已转交 Neon 修复
+- 2026-11-24 Neon 完成 PR #5 第 1 轮审查全部 5 项修复并推送（CI 全绿，29/29 单测通过），已派发新任务交 Astra 第 2 轮复审
+- 2026-11-24 Sol 完成 Issue #3（M0-2 PeerJS 联机 Spike 与 Transport 抽象）并提交 PR #6（CI 全绿，26/26 单测通过），已派发 Astra 审查
+- 2026-11-24 Astra 完成 PR #5 第 1 轮审查（REQUEST_CHANGES），转交 Neon 修复
 - 2026-11-24 14:28 定时任务按期触发：唤醒 Sol 续跑 #3 并新派 Astra 审查 PR #5
-- 2026-11-24 Neon 完成 Issue #4（M0-3 菜单 UI 外壳）并提交 PR #5（CI 全绿）
 - 2026-11-24 PR #2（Issue #1 工程脚手架与部署管线）合并入 `main`，GitHub Pages 自动部署成功
 
 ## 决策记录
