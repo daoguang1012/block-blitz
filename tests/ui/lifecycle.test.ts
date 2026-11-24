@@ -418,12 +418,14 @@ describe('UI lifecycle teardown and focus management', () => {
     expect(background.getAttribute('aria-hidden')).toBeNull();
     expect(doc.activeElement).toBe(triggerButton);
 
-    // Re-opening and destroying while open must also clear inert.
+    // Re-opening and destroying while open must also clear inert and restore focus.
     modal.open();
     expect(background.inert).toBe(true);
+    expect(doc.activeElement).toBe(closeButton);
     modal.destroy();
     expect(background.inert).toBe(false);
     expect(background.getAttribute('aria-hidden')).toBeNull();
+    expect(doc.activeElement).toBe(triggerButton);
   });
 
   it('removes fallback textarea from document.body even when execCommand throws', async () => {

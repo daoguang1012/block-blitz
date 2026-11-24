@@ -489,10 +489,9 @@ export function createSettingsModal(
         return;
       }
       if (isOpen) {
-        setBackgroundInert(false);
+        close();
       }
       destroyed = true;
-      isOpen = false;
       previousFocus = null;
       if (resetTimer !== null) {
         window.clearTimeout(resetTimer);

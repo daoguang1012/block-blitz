@@ -47,22 +47,3 @@ body {
 #ui-root > :not(.bb-ui) {
   pointer-events: auto;
 }
-
-.app-version {
-  position: fixed;
-  right: calc(env(safe-area-inset-right) + 0.875rem);
-  bottom: calc(env(safe-area-inset-bottom) + 0.625rem);
-  z-index: 20;
-  padding: 0.25rem 0.625rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 12px rgba(23, 61, 54, 0.1);
-  backdrop-filter: blur(8px);
-  font-size: 0.75rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: #1d4e44;
-  pointer-events: none;
-  user-select: none;
-}
