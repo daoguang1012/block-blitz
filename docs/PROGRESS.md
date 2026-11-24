@@ -4,15 +4,16 @@
 
 ## 当前状态
 
-- **当前里程碑**：M1 单机核心（启动中：M0 已圆满通过真机测试正式关闭；已拆解 M1 六个子任务，首波基础契约与主循环任务 #7 已派发 Sol）
+- **当前里程碑**：M1 单机核心（Wave 1 #7 已一次审查通过合入 `main` `de20f4c`；Wave 2 已双线并行派发：Sol #9 碰撞/射线/控制器 + Neon #10 Block Plaza 地图与场景几何合并）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ ｜ 联机诊断页：https://daoguang1012.github.io/block-blitz/?spike=net
-- **下一步**：#7（M1-1 核心契约 + 60Hz 主循环 + 键鼠输入 + 地图加载器）完成并经 Astra 审查合入 → 并行派发 M1-2（Sol：碰撞/射线/玩家控制器）与 M1-3（Neon：Block Plaza 地图 JSON + Three.js 场景合并构建）→ 并行派发 M1-4（Sol：武器系统 + 移动靶模拟）与 M1-5（Neon：触屏输入 + 战斗 HUD + 交叉单测）→ M1-6（Sol：训练场端到端集成 + 视角武器模型 + 命中特效）→ Astra `xhigh` M1 验收 → 请产品负责人真机试玩训练场
+- **下一步**：等待 Wave 2（#9、#10）完成并经 Astra 审查合入 → 双线并行派发 Wave 3（Sol：武器系统 + 移动靶模拟；Neon：触屏输入 + 战斗 HUD + 交叉单测）→ Wave 4 训练场端到端集成 → Astra `xhigh` M1 验收 → 请产品负责人真机试玩训练场
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #7 | [M1] 核心共享契约、固定步长主循环、键鼠输入与地图加载器（M1-1） | Sol（作者）/ Astra（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-1-sol-core-contracts-loop-input-map`<br>R1 审查：`node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-1-astra-review-r1` | `feat/7-core-contracts-loop-input` | [#8](https://github.com/daoguang1012/block-blitz/pull/8)（`a746877`，121 单测 ✅） | 🔍 Astra 第 1 轮审查进行中 |
+| #9 | [M1] 世界碰撞、射线检测与第一人称玩家控制器（M1-2） | Sol（`xhigh`） | `node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-2-sol-collision-raycast-controller` | `feat/9-collision-raycast-controller` | — | 🛠️ 开发中 |
+| #10 | [M1] Block Plaza 地图数据、画质分档渲染器与静态场景几何合并（M1-3） | Neon（`high`） | `node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-3-neon-block-plaza-renderer-scene` | `feat/10-block-plaza-scene-builder` | — | 🛠️ 开发中 |
 
 ## M1 单机核心拆解计划
 
@@ -30,7 +31,7 @@
 | 里程碑 | 状态 | 验收报告 |
 |---|---|---|
 | M0 骨架 & 风险验证 | ✅ 已完成（自动化验收 + 真机 4G 跨网验证全部 PASS，RTT 41.4 ms） | [docs/M0_ACCEPTANCE.md](M0_ACCEPTANCE.md) · [docs/NET_SPIKE.md](NET_SPIKE.md) |
-| M1 单机核心 | 🔄 进行中（Wave 1 #7 已派发 Sol） | — |
+| M1 单机核心 | 🔄 进行中（Wave 1 #7 已合入，Wave 2 #9 + #10 并行开发中） | — |
 | M2 联机 MVP | ⏳ | — |
 | M3 内容 | ⏳ | — |
 | M4 打磨 | ⏳ | — |
@@ -38,6 +39,7 @@
 
 ## 已完成（最近 10 条）
 
+- 2026-11-24 合并 PR #8（[#7] 核心共享契约、固定步长主循环、键鼠输入与地图加载器，`de20f4c`）：Astra 首轮审查 `VERDICT: APPROVE`（0 Blocker / 0 Major，121/121 单测通过；1 项同帧 `weaponSlot` 与 `prevWeapon` 优先级 Minor 纳入 M1-4 武器切换规则）
 - 2026-11-24 产品负责人完成 M0-4 真机跨网验证（RTT 41.4 ms，双通道各 100/100 送达，`unreliable` 实测乱序 2），回填 `docs/NET_SPIKE.md` 并正式关闭 M0 里程碑，启动 M1 派发 #7
 - 2026-11-24 Astra（`xhigh`）完成 M0 里程碑集成与线上 Pages 验收：**M0 ACCEPTANCE: PASS**（0 Blocker / 0 Major / 1 Minor，62/62 单测通过，gzip 总包体 175.6 KB）
 - 2026-11-24 合并 PR #6（[#3] PeerJS 联机 Spike 与 Transport 抽象，`69b3c26`）：Astra 第 2 轮复审 `VERDICT: APPROVE`（0 Blocker / 0 Major，2 项 Minor 留入 M2 收口），CI 全绿
