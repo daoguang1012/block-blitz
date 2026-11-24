@@ -4,22 +4,33 @@
 
 ## 当前状态
 
-- **当前里程碑**：M0 骨架 & 风险验证（自动化集成验收 **PASS**，等待产品负责人执行 M0-4 电脑 + 手机 4G 真机验证）
+- **当前里程碑**：M1 单机核心（启动中：M0 已圆满通过真机测试正式关闭；已拆解 M1 六个子任务，首波基础契约与主循环任务 #7 已派发 Sol）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ ｜ 联机诊断页：https://daoguang1012.github.io/block-blitz/?spike=net
-- **下一步**：产品负责人反馈 M0-4 真机测试结果 → 回填 `docs/NET_SPIKE.md` 并正式关闭 M0 → 拆解并启动 **M1 单机核心**
+- **下一步**：#7（M1-1 核心契约 + 60Hz 主循环 + 键鼠输入 + 地图加载器）完成并经 Astra 审查合入 → 并行派发 M1-2（Sol：碰撞/射线/玩家控制器）与 M1-3（Neon：Block Plaza 地图 JSON + Three.js 场景合并构建）→ 并行派发 M1-4（Sol：武器系统 + 移动靶模拟）与 M1-5（Neon：触屏输入 + 战斗 HUD + 交叉单测）→ M1-6（Sol：训练场端到端集成 + 视角武器模型 + 命中特效）→ Astra `xhigh` M1 验收 → 请产品负责人真机试玩训练场
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| M0-4 | 电脑（家宽）+ 手机（4G）真机联机验证 | 产品负责人 | — | `main`（`69b3c26`） | — | ⏳ 等待产品负责人真机实测反馈 |
+| #7 | [M1] 核心共享契约、固定步长主循环、键鼠输入与地图加载器（M1-1） | Sol | `node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-1-sol-core-contracts-loop-input-map` | `feat/7-core-contracts-loop-input` | — | 🛠️ 开发中 |
+
+## M1 单机核心拆解计划
+
+| 批次 | 代号 | 任务 | 负责 | 允许修改范围（零重叠） | 依赖 |
+|---|---|---|---|---|---|
+| Wave 1 | M1-1（#7） | `shared/types.ts`、`shared/math.ts`、60 Hz `FixedStepLoop`、`InputState` + `KeyboardMouseInput`、`map-loader.ts` | Sol（`high`） | `src/shared/**`、`src/core/loop.ts`、`src/core/input/{input-state,keyboard-mouse}.ts`、`src/world/map-loader.ts`、`src/config/{loop,input}.ts`、`tests/{shared,core}/`、`tests/world/map-loader.test.ts` | 无 |
+| Wave 2 | M1-2 | 胶囊 vs AABB 碰撞滑移、射线 vs AABB/胶囊（含 +20% 头/+10% 身判定放宽）、第一人称 `PlayerController`（移动/空控/跳/冲刺/跳板冲量） | Sol（`xhigh`） | `src/world/{collision,raycast}.ts`、`src/game/player-controller.ts`、`src/config/player.ts`、`tests/world/{collision,raycast}.test.ts`、`tests/game/player-controller.test.ts` | M1-1 |
+| Wave 2 | M1-3 | Block Plaza 地图 JSON（60×60m、中央高台、四角掩体、双跳板、≥8 出生点）+ `renderer.ts` 画质分档 + `scene-builder.ts` 静态几何合并 | Neon（`high`） | `public/maps/block-plaza.json`、`src/render/{renderer,scene-builder}.ts`、`src/config/{render,map}.ts`、`tests/world/block-plaza.test.ts` | M1-1 |
+| Wave 3 | M1-4 | 武器状态机框架 + 爆能枪（8 发/s、30 发自动/手动换弹、散布）+ 平底锅（近战 50 伤、2m 击退）+ 移动靶纯模拟（往返移动、受击扣血、3s 复活、瞄敌检测） | Sol（`high`） | `src/game/weapons/**`、`src/game/targets.ts`、`src/config/{weapons,targets}.ts`、`tests/game/{weapons,targets}.test.ts` | M1-2 |
+| Wave 3 | M1-5 | 基础触屏输入（左半屏浮动摇杆、右半屏转视角、按住开火同时拖动转视角、跳/冲刺/换弹/切枪 ≥56px 安全区）+ 战斗 HUD（变红准星 + 命中 X、血甲、弹药、冲刺冷却、FPS、暂停弹窗）+ 碰撞边界交叉单测 | Neon（`high`） | `src/core/input/touch.ts`、`src/ui/hud/**`、`src/styles/hud.css`、`src/ui/strings.ts`、`src/config/ui.ts`、`tests/core/touch-input.test.ts`、`tests/ui/hud.test.ts`、`tests/world/collision-edge.test.ts` | M1-1, M1-2 |
+| Wave 4 | M1-6 | 训练场端到端集成（`#/train` 生命周期、Pointer Lock / 触屏全屏切换）、第一人称视角武器模型（后坐/挥锅）与弹道/命中火花特效、移动靶方块机器人渲染 | Sol（`high`） | `src/game/training-session.ts`、`src/render/{viewmodel,target-meshes}.ts`、`src/render/effects/**`、`src/ui/index.ts`、`src/ui/train/train-shell.ts`、`src/main.ts`、`tests/game/training-session.test.ts` | M1-2 ~ M1-5 |
 
 ## 里程碑总览
 
 | 里程碑 | 状态 | 验收报告 |
 |---|---|---|
-| M0 骨架 & 风险验证 | ⏸️ 自动化验收 **PASS**（62/62 单测、线上 Pages 已上线），待 M0-4 真机验证闭环 | [docs/M0_ACCEPTANCE.md](M0_ACCEPTANCE.md) |
-| M1 单机核心 | ⏳ | — |
+| M0 骨架 & 风险验证 | ✅ 已完成（自动化验收 + 真机 4G 跨网验证全部 PASS，RTT 41.4 ms） | [docs/M0_ACCEPTANCE.md](M0_ACCEPTANCE.md) · [docs/NET_SPIKE.md](NET_SPIKE.md) |
+| M1 单机核心 | 🔄 进行中（Wave 1 #7 已派发 Sol） | — |
 | M2 联机 MVP | ⏳ | — |
 | M3 内容 | ⏳ | — |
 | M4 打磨 | ⏳ | — |
@@ -27,6 +38,7 @@
 
 ## 已完成（最近 10 条）
 
+- 2026-11-24 产品负责人完成 M0-4 真机跨网验证（RTT 41.4 ms，双通道各 100/100 送达，`unreliable` 实测乱序 2），回填 `docs/NET_SPIKE.md` 并正式关闭 M0 里程碑，启动 M1 派发 #7
 - 2026-11-24 Astra（`xhigh`）完成 M0 里程碑集成与线上 Pages 验收：**M0 ACCEPTANCE: PASS**（0 Blocker / 0 Major / 1 Minor，62/62 单测通过，gzip 总包体 175.6 KB）
 - 2026-11-24 合并 PR #6（[#3] PeerJS 联机 Spike 与 Transport 抽象，`69b3c26`）：Astra 第 2 轮复审 `VERDICT: APPROVE`（0 Blocker / 0 Major，2 项 Minor 留入 M2 收口），CI 全绿
 - 2026-11-24 合并 PR #5（[#4] 菜单 UI 外壳、Hash 路由与本地设置，`5d66b65`）：Astra 第 3 轮终审 `VERDICT: APPROVE`（0 Blocker / 0 Major / 0 Minor），CI 全绿
@@ -34,21 +46,18 @@
 - 2026-11-24 Neon 完成 PR #5 第 2 轮审查全部 2 项修复并推送（`fb682a7`，CI 全绿，29/29 单测通过）
 - 2026-11-24 Astra 完成 PR #5 第 2 轮复审（确认第 1 轮 5 项全过，检出横屏版本徽标样式覆盖问题）
 - 2026-11-24 Astra 完成 PR #6 第 1 轮审查（REQUEST_CHANGES：4 项改进建议）
-- 2026-11-24 14:28 定时任务按期触发：Sol 提交 PR #6，Astra 完成 PR #5 第 1 轮审查，Neon 完成第 1 轮 5 项修复
 
 ## 决策记录
 
 | 日期 | 决策 | 理由 |
 |---|---|---|
+| 2026-11-24 | M2/M4 联机建连失败提示中必须显式加入「请检查是否开启了 VPN/代理软件或禁用了浏览器 WebRTC」引导 | M0-4 真机实测确认：开启代理或浏览器禁用 WebRTC 会直接阻断 P2P 打洞，恢复后 RTT 仅 41.4 ms |
+| 2026-11-24 | M1 拆分为 4 波共 6 个子任务（M1-1 接口先行 → M1-2/M1-3 并行 → M1-4/M1-5 并行 → M1-6 集成收口） | 严格遵循 `ORCHESTRATION.md` §3/§8 接口先行与文件零重叠原则，最大化 Sol 与 Neon 并行效率 |
 | 2026-11-24 | M0 验收检出的诊断页按钮高度 44 px（`net-spike.css`）作为 Minor 记录，M2 正式大厅 UI 直接统一采用 `UI_CONFIG.minTouchTargetPx`（56 px） | `?spike=net` 仅为开发诊断入口，主菜单与设置正式 UI 已全部满足 ≥ 56 px |
 | 2026-11-24 | PR #6 R2 复审记录的 2 项 Minor（`PeerJsTransport.sendFrame` 避免双重 JSON 序列化、`spike-pings.test.ts` 补 `expire()` 独立断言）归入 M2 网络模块迭代一并优化 | 不影响当前正确性与安全性，按 `ORCHESTRATION.md` §2.8 不阻塞 M0 合并 |
-| 2026-11-24 | 设定 `2026-11-24T19:33:00+08:00` 一次性定时任务自动唤醒续跑 M0 收尾 | 产品负责人于 19:03 确认选方案 B（保持原装 `gpt-6.2-astra` 模型，28 分钟后恢复额度） |
-| 2026-11-24 | 后续派发 Astra 复审（R2/R3）时明确限定只做增量 diff 与问题点回归验证，避免重复全量浏览器套件以节约 Codex 额度 | 14:28–15:03 期间连续 5 个高强度 Codex 任务快速耗尽单窗口配额 |
-| 2026-11-24 | 针对 PeerJS 1.5.5 `reliable: false` 实测仅设 `ordered: false`（未限重传）：M2 继续使用 PeerJS 双通道方案，并在应用层对高频 `state`/`snap` 按 `seq`/`tick` 丢弃旧包 | `ordered: false` 已消除队头阻塞，6 人小包场景无需引入自建信令/SDP 协商复杂度 |
+| 2026-11-24 | 针对 PeerJS 1.5.5 `reliable: false` 实测仅设 `ordered: false`（未限重传）：M2 继续使用 PeerJS 双通道方案，并在应用层对高频 `state`/`snap` 按 `seq`/`tick` 丢弃旧包 | 真机跨网实测 `unreliable` 出现 `乱序 2` 且 100/100 到达，验证了消除队头阻塞与应用层丢旧方案的有效性 |
 | 2026-11-24 | 不切换替代模型，保持 Sol（`gpt-6.2-sol`）/ Neon（`gemini-4-neon`）/ Astra（`gpt-6.2-astra`）原定分工 | 产品负责人确认：保持团队模型一致性 |
-| 2026-11-24 | 采纳 PR #5 中 `#ui-root > :not(.bb-ui) { pointer-events: auto; }` 的兼容规则 | 兼顾 3D 背景透传与 `?spike=net` 诊断页点击交互 |
-| 2026-11-24 | 在 M0-1 中预置 `src/ui/index.ts` 与 `src/net/spike.ts` 挂载入口 | 消除 M0-2 与 M0-3 并行开发的合并冲突 |
 
 ## 阻塞 / 待用户处理
 
-- **待产品负责人执行 M0-4 真机测试**（电脑家宽 + 手机 4G）：打开 https://daoguang1012.github.io/block-blitz/?spike=net 验证跨网房间码直连、双通道收发与 RTT，反馈结果后即刻进入 M1。
+- 暂无待用户处理事项（团队正全自动推进 **M1 单机核心**，完成后请产品负责人真机试玩训练场）。
