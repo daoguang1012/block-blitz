@@ -23,6 +23,9 @@ function createPortraitGuard(): {
   element: HTMLElement;
   destroy(): void;
 } {
+  const abortController = new AbortController();
+  const { signal } = abortController;
+
   const icon = el('div', {
     className: 'bb-rotate-icon',
     attrs: { 'aria-hidden': 'true' },
@@ -51,32 +54,43 @@ function createPortraitGuard(): {
   );
 
   let mediaQuery: MediaQueryList | null = null;
-  const syncAriaHidden = (): void => {
-    if (!mediaQuery) {
-      return;
+
+  const isPortraitBlocked = (): boolean => {
+    if (mediaQuery) {
+      return mediaQuery.matches;
     }
-    overlay.setAttribute('aria-hidden', String(!mediaQuery.matches));
+    if (typeof window !== 'undefined') {
+      return (
+        window.innerHeight > window.innerWidth &&
+        window.innerWidth <= UI_CONFIG.portraitGuardMaxWidthPx
+      );
+    }
+    return false;
   };
 
-  if (
-    typeof window !== 'undefined' &&
-    typeof window.matchMedia === 'function'
-  ) {
-    mediaQuery = window.matchMedia(
-      `(orientation: portrait) and (max-width: ${UI_CONFIG.portraitGuardMaxWidthPx}px)`,
-    );
-    syncAriaHidden();
-    if (typeof mediaQuery.addEventListener === 'function') {
-      mediaQuery.addEventListener('change', syncAriaHidden);
+  const syncPortraitState = (): void => {
+    const visible = isPortraitBlocked();
+    overlay.classList.toggle('is-visible', visible);
+    overlay.setAttribute('aria-hidden', String(!visible));
+  };
+
+  if (typeof window !== 'undefined') {
+    if (typeof window.matchMedia === 'function') {
+      mediaQuery = window.matchMedia(
+        `(orientation: portrait) and (max-width: ${UI_CONFIG.portraitGuardMaxWidthPx}px)`,
+      );
+      if (typeof mediaQuery.addEventListener === 'function') {
+        mediaQuery.addEventListener('change', syncPortraitState, { signal });
+      }
     }
+    window.addEventListener('resize', syncPortraitState, { signal });
+    syncPortraitState();
   }
 
   return {
     element: overlay,
     destroy(): void {
-      if (mediaQuery && typeof mediaQuery.removeEventListener === 'function') {
-        mediaQuery.removeEventListener('change', syncAriaHidden);
-      }
+      abortController.abort();
       overlay.remove();
     },
   };
@@ -90,6 +104,11 @@ export function initUI(root: HTMLElement): { destroy(): void } {
   const storageAvailable = storage !== null;
 
   const uiContainer = el('div', { className: 'bb-ui' });
+  uiContainer.style.setProperty(
+    '--bb-touch-min',
+    `${UI_CONFIG.minTouchTargetPx}px`,
+  );
+
   const stage = el('main', { className: 'bb-stage' });
   const versionBadge = el('span', {
     className: 'app-version',
@@ -99,6 +118,7 @@ export function initUI(root: HTMLElement): { destroy(): void } {
   const router = createHashRouter(window);
   const settingsModal = createSettingsModal({
     initialSettings: settings,
+    backgroundElements: [stage, versionBadge],
     onChange(next) {
       const result = saveGameSettings(next, storage, defaultSettings);
       settings = result.settings;

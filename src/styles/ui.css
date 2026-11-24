@@ -20,7 +20,6 @@
   --bb-radius-lg: 22px;
   --bb-radius-md: 14px;
   --bb-radius-sm: 10px;
-  --bb-touch-min: 56px;
 }
 
 .bb-ui {
@@ -273,12 +272,13 @@
 /* Theme Color Swatches */
 .bb-color-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(var(--bb-touch-min), 1fr));
   gap: 0.5rem;
 }
 
 .bb-color-swatch {
   position: relative;
+  min-width: var(--bb-touch-min);
   min-height: var(--bb-touch-min);
   padding: 0;
   border-radius: var(--bb-radius-md);
@@ -827,10 +827,11 @@
   color: #0e6f56;
 }
 
-/* Touch-friendly Range Slider */
+/* Touch-friendly Range Slider (>= 56px hit height) */
 .bb-range {
   width: 100%;
-  height: 36px;
+  height: var(--bb-touch-min);
+  min-height: var(--bb-touch-min);
   margin: 0;
   accent-color: var(--bb-primary);
   cursor: pointer;
@@ -1012,10 +1013,8 @@
   font-weight: 600;
 }
 
-@media (orientation: portrait) and (max-width: 900px) {
-  .bb-portrait-guard {
-    display: flex;
-  }
+.bb-portrait-guard.is-visible {
+  display: flex;
 }
 
 /* Short Landscape Mobile Viewports (e.g. 844x390, 667x375) */

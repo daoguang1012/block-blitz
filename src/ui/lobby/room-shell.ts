@@ -11,7 +11,7 @@ export interface RoomShellOptions {
   onBackToMenu: () => void;
 }
 
-async function copyTextToClipboard(text: string): Promise<boolean> {
+export async function copyTextToClipboard(text: string): Promise<boolean> {
   if (
     typeof navigator !== 'undefined' &&
     navigator.clipboard &&
@@ -25,18 +25,19 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
     }
   }
 
+  let textarea: HTMLTextAreaElement | null = null;
   try {
-    const textarea = document.createElement('textarea');
+    textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.setAttribute('readonly', '');
     textarea.className = 'bb-sr-only';
     document.body.append(textarea);
     textarea.select();
-    const copied = document.execCommand('copy');
-    textarea.remove();
-    return copied;
+    return document.execCommand('copy');
   } catch {
     return false;
+  } finally {
+    textarea?.remove();
   }
 }
 
@@ -44,6 +45,8 @@ export function createRoomShellView(options: RoomShellOptions): UIView {
   const shareUrl = buildShareUrl(window.location.href, options.roomCode);
   let feedbackTimer: number | null = null;
   let destroyed = false;
+  const abortController = new AbortController();
+  const { signal } = abortController;
 
   const root = el('section', {
     className: 'bb-subview-layout',
@@ -177,18 +180,31 @@ export function createRoomShellView(options: RoomShellOptions): UIView {
   }
 
   function handleCopyClick(): void {
+    if (destroyed) {
+      return;
+    }
     void copyTextToClipboard(shareUrl).then((copied) => {
       showCopyFeedback(copied);
     });
   }
 
   function handleUrlFocus(): void {
-    shareUrlInput.select();
+    if (!destroyed) {
+      shareUrlInput.select();
+    }
   }
 
-  copyButton.addEventListener('click', handleCopyClick);
-  shareUrlInput.addEventListener('focus', handleUrlFocus);
-  backButton.addEventListener('click', options.onBackToMenu);
+  copyButton.addEventListener('click', handleCopyClick, { signal });
+  shareUrlInput.addEventListener('focus', handleUrlFocus, { signal });
+  backButton.addEventListener(
+    'click',
+    () => {
+      if (!destroyed) {
+        options.onBackToMenu();
+      }
+    },
+    { signal },
+  );
 
   card.append(topHeader, shareSection, playersSection, notice, backButton);
   root.append(card);
@@ -196,14 +212,15 @@ export function createRoomShellView(options: RoomShellOptions): UIView {
   return {
     element: root,
     destroy(): void {
+      if (destroyed) {
+        return;
+      }
       destroyed = true;
       if (feedbackTimer !== null) {
         window.clearTimeout(feedbackTimer);
         feedbackTimer = null;
       }
-      copyButton.removeEventListener('click', handleCopyClick);
-      shareUrlInput.removeEventListener('focus', handleUrlFocus);
-      backButton.removeEventListener('click', options.onBackToMenu);
+      abortController.abort();
       root.remove();
     },
   };

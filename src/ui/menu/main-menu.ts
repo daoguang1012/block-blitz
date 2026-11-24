@@ -32,6 +32,9 @@ export interface UIView {
 
 export function createMainMenuView(options: MainMenuOptions): UIView {
   let currentProfile: PlayerProfile = { ...options.profile };
+  let destroyed = false;
+  const abortController = new AbortController();
+  const { signal } = abortController;
 
   const root = el('section', {
     className: 'bb-menu-layout',
@@ -137,6 +140,9 @@ export function createMainMenuView(options: MainMenuOptions): UIView {
   }
 
   function commitProfile(next: PlayerProfile): void {
+    if (destroyed) {
+      return;
+    }
     const result = options.onProfileChange(next);
     currentProfile = result.profile;
     avatarNameplate.textContent = currentProfile.nickname;
@@ -162,12 +168,16 @@ export function createMainMenuView(options: MainMenuOptions): UIView {
     });
     swatchButton.append(checkMark);
 
-    swatchButton.addEventListener('click', () => {
-      commitProfile({
-        nickname: sanitizeNickname(nicknameInput.value),
-        colorId: color.id,
-      });
-    });
+    swatchButton.addEventListener(
+      'click',
+      () => {
+        commitProfile({
+          nickname: sanitizeNickname(nicknameInput.value),
+          colorId: color.id,
+        });
+      },
+      { signal },
+    );
 
     colorButtons.set(color.id, swatchButton);
     colorGrid.append(swatchButton);
@@ -176,6 +186,9 @@ export function createMainMenuView(options: MainMenuOptions): UIView {
   updatePersistenceHint(options.storageAvailable);
 
   function handleNicknameInput(): void {
+    if (destroyed) {
+      return;
+    }
     const nextNickname = sanitizeNickname(nicknameInput.value);
     commitProfile({
       nickname: nextNickname,
@@ -184,6 +197,9 @@ export function createMainMenuView(options: MainMenuOptions): UIView {
   }
 
   function handleNicknameBlur(): void {
+    if (destroyed) {
+      return;
+    }
     const nextNickname = sanitizeNickname(nicknameInput.value);
     nicknameInput.value = nextNickname;
     commitProfile({
@@ -192,8 +208,8 @@ export function createMainMenuView(options: MainMenuOptions): UIView {
     });
   }
 
-  nicknameInput.addEventListener('input', handleNicknameInput);
-  nicknameInput.addEventListener('blur', handleNicknameBlur);
+  nicknameInput.addEventListener('input', handleNicknameInput, { signal });
+  nicknameInput.addEventListener('blur', handleNicknameBlur, { signal });
 
   profileCard.append(
     profileHeadingRow,
@@ -284,6 +300,9 @@ export function createMainMenuView(options: MainMenuOptions): UIView {
   });
 
   function handleRoomCodeInput(): void {
+    if (destroyed) {
+      return;
+    }
     const cleaned = roomCodeInput.value.replace(/\s+/g, '').toUpperCase();
     if (roomCodeInput.value !== cleaned) {
       roomCodeInput.value = cleaned;
@@ -296,6 +315,9 @@ export function createMainMenuView(options: MainMenuOptions): UIView {
 
   function handleJoinSubmit(event: SubmitEvent): void {
     event.preventDefault();
+    if (destroyed) {
+      return;
+    }
     const normalized = normalizeRoomCode(roomCodeInput.value);
     if (!normalized) {
       joinError.textContent = UI_STRINGS.menu.invalidRoomCode;
@@ -308,11 +330,35 @@ export function createMainMenuView(options: MainMenuOptions): UIView {
     options.onJoinRoom(normalized);
   }
 
-  trainButton.addEventListener('click', options.onStartTrain);
-  createRoomButton.addEventListener('click', options.onCreateRoom);
-  roomCodeInput.addEventListener('input', handleRoomCodeInput);
-  joinForm.addEventListener('submit', handleJoinSubmit);
-  settingsButton.addEventListener('click', options.onOpenSettings);
+  trainButton.addEventListener(
+    'click',
+    () => {
+      if (!destroyed) {
+        options.onStartTrain();
+      }
+    },
+    { signal },
+  );
+  createRoomButton.addEventListener(
+    'click',
+    () => {
+      if (!destroyed) {
+        options.onCreateRoom();
+      }
+    },
+    { signal },
+  );
+  roomCodeInput.addEventListener('input', handleRoomCodeInput, { signal });
+  joinForm.addEventListener('submit', handleJoinSubmit, { signal });
+  settingsButton.addEventListener(
+    'click',
+    () => {
+      if (!destroyed) {
+        options.onOpenSettings();
+      }
+    },
+    { signal },
+  );
 
   actionsCard.append(
     actionsHeading,
@@ -328,13 +374,11 @@ export function createMainMenuView(options: MainMenuOptions): UIView {
   return {
     element: root,
     destroy(): void {
-      nicknameInput.removeEventListener('input', handleNicknameInput);
-      nicknameInput.removeEventListener('blur', handleNicknameBlur);
-      trainButton.removeEventListener('click', options.onStartTrain);
-      createRoomButton.removeEventListener('click', options.onCreateRoom);
-      roomCodeInput.removeEventListener('input', handleRoomCodeInput);
-      joinForm.removeEventListener('submit', handleJoinSubmit);
-      settingsButton.removeEventListener('click', options.onOpenSettings);
+      if (destroyed) {
+        return;
+      }
+      destroyed = true;
+      abortController.abort();
       root.remove();
     },
   };

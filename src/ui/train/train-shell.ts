@@ -9,6 +9,10 @@ export interface TrainShellOptions {
 }
 
 export function createTrainShellView(options: TrainShellOptions): UIView {
+  let destroyed = false;
+  const abortController = new AbortController();
+  const { signal } = abortController;
+
   const root = el('section', {
     className: 'bb-subview-layout',
     attrs: { 'aria-label': UI_STRINGS.train.title },
@@ -53,7 +57,15 @@ export function createTrainShellView(options: TrainShellOptions): UIView {
     text: UI_STRINGS.train.backToMenu,
     attrs: { type: 'button' },
   });
-  backButton.addEventListener('click', options.onBackToMenu);
+  backButton.addEventListener(
+    'click',
+    () => {
+      if (!destroyed) {
+        options.onBackToMenu();
+      }
+    },
+    { signal },
+  );
 
   card.append(badge, title, profileRow, notice, backButton);
   root.append(card);
@@ -61,7 +73,11 @@ export function createTrainShellView(options: TrainShellOptions): UIView {
   return {
     element: root,
     destroy(): void {
-      backButton.removeEventListener('click', options.onBackToMenu);
+      if (destroyed) {
+        return;
+      }
+      destroyed = true;
+      abortController.abort();
       root.remove();
     },
   };

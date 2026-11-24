@@ -11,6 +11,7 @@ import { UI_STRINGS } from '../strings';
 
 export interface SettingsModalOptions {
   initialSettings: GameSettings;
+  backgroundElements?: ReadonlyArray<HTMLElement>;
   onChange: (next: GameSettings) => GameSettings;
   onReset: () => GameSettings;
 }
@@ -33,6 +34,9 @@ interface ToggleBinding {
   stateLabel: HTMLElement;
 }
 
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
+
 function formatSensitivity(value: number): string {
   return value.toFixed(UI_CONFIG.sensitivityDecimals);
 }
@@ -53,6 +57,9 @@ export function createSettingsModal(
   let resetTimer: number | null = null;
   let previousFocus: HTMLElement | null = null;
   let destroyed = false;
+  const backgroundElements = options.backgroundElements ?? [];
+  const abortController = new AbortController();
+  const { signal } = abortController;
 
   const titleId = 'bb-settings-dialog-title';
   const backdrop = el('div', {
@@ -98,7 +105,27 @@ export function createSettingsModal(
   >();
   const qualityButtons = new Map<QualityPreset, HTMLButtonElement>();
 
+  function setBackgroundInert(inert: boolean): void {
+    for (const element of backgroundElements) {
+      element.inert = inert;
+      if (inert) {
+        element.setAttribute('aria-hidden', 'true');
+      } else {
+        element.removeAttribute('aria-hidden');
+      }
+    }
+  }
+
+  function getFocusableElements(): HTMLElement[] {
+    return Array.from(
+      dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+    ).filter((element) => !element.hasAttribute('hidden'));
+  }
+
   function updateSettings(partial: Partial<GameSettings>): void {
+    if (destroyed) {
+      return;
+    }
     settings = options.onChange({ ...settings, ...partial });
     syncControls();
   }
@@ -142,10 +169,14 @@ export function createSettingsModal(
     });
     input.value = String(settings[key]);
 
-    input.addEventListener('input', () => {
-      const numeric = Number(input.value);
-      updateSettings({ [key]: numeric } as Partial<GameSettings>);
-    });
+    input.addEventListener(
+      'input',
+      () => {
+        const numeric = Number(input.value);
+        updateSettings({ [key]: numeric } as Partial<GameSettings>);
+      },
+      { signal },
+    );
 
     rangeBindings.set(key, { input, valueLabel, format });
     return el('div', { className: 'bb-setting-row' }, labelRow, input);
@@ -191,9 +222,13 @@ export function createSettingsModal(
       track,
     );
 
-    button.addEventListener('click', () => {
-      updateSettings({ [key]: !settings[key] } as Partial<GameSettings>);
-    });
+    button.addEventListener(
+      'click',
+      () => {
+        updateSettings({ [key]: !settings[key] } as Partial<GameSettings>);
+      },
+      { signal },
+    );
 
     toggleBindings.set(key, { button, stateLabel });
     return el(
@@ -219,9 +254,13 @@ export function createSettingsModal(
           'aria-pressed': String(settings.quality === preset),
         },
       });
-      btn.addEventListener('click', () => {
-        updateSettings({ quality: preset });
-      });
+      btn.addEventListener(
+        'click',
+        () => {
+          updateSettings({ quality: preset });
+        },
+        { signal },
+      );
       qualityButtons.set(preset, btn);
       group.append(btn);
     }
@@ -347,6 +386,9 @@ export function createSettingsModal(
   }
 
   function handleReset(): void {
+    if (destroyed) {
+      return;
+    }
     settings = options.onReset();
     syncControls();
     resetFeedback.textContent = UI_STRINGS.settings.resetSuccess;
@@ -363,15 +405,43 @@ export function createSettingsModal(
   }
 
   function handleBackdropClick(event: MouseEvent): void {
-    if (event.target === backdrop) {
+    if (!destroyed && event.target === backdrop) {
       close();
     }
   }
 
   function handleKeyDown(event: KeyboardEvent): void {
-    if (isOpen && event.key === 'Escape') {
+    if (destroyed || !isOpen) {
+      return;
+    }
+
+    if (event.key === 'Escape') {
       event.preventDefault();
       close();
+      return;
+    }
+
+    if (event.key === 'Tab') {
+      const focusables = getFocusableElements();
+      if (focusables.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      const isInsideDialog = active !== null && dialog.contains(active);
+
+      if (event.shiftKey) {
+        if (!isInsideDialog || active === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (!isInsideDialog || active === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   }
 
@@ -380,10 +450,12 @@ export function createSettingsModal(
       return;
     }
     previousFocus =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
+      document.activeElement &&
+      typeof (document.activeElement as HTMLElement).focus === 'function'
+        ? (document.activeElement as HTMLElement)
         : null;
     isOpen = true;
+    setBackgroundInert(true);
     syncControls();
     backdrop.removeAttribute('hidden');
     closeButton.focus();
@@ -395,16 +467,17 @@ export function createSettingsModal(
     }
     isOpen = false;
     backdrop.setAttribute('hidden', '');
+    setBackgroundInert(false);
     if (previousFocus && previousFocus.isConnected) {
       previousFocus.focus();
     }
     previousFocus = null;
   }
 
-  closeButton.addEventListener('click', close);
-  resetButton.addEventListener('click', handleReset);
-  backdrop.addEventListener('click', handleBackdropClick);
-  window.addEventListener('keydown', handleKeyDown);
+  closeButton.addEventListener('click', close, { signal });
+  resetButton.addEventListener('click', handleReset, { signal });
+  backdrop.addEventListener('click', handleBackdropClick, { signal });
+  window.addEventListener('keydown', handleKeyDown, { signal });
   syncControls();
 
   return {
@@ -412,16 +485,20 @@ export function createSettingsModal(
     open,
     close,
     destroy(): void {
+      if (destroyed) {
+        return;
+      }
+      if (isOpen) {
+        setBackgroundInert(false);
+      }
       destroyed = true;
       isOpen = false;
+      previousFocus = null;
       if (resetTimer !== null) {
         window.clearTimeout(resetTimer);
         resetTimer = null;
       }
-      closeButton.removeEventListener('click', close);
-      resetButton.removeEventListener('click', handleReset);
-      backdrop.removeEventListener('click', handleBackdropClick);
-      window.removeEventListener('keydown', handleKeyDown);
+      abortController.abort();
       backdrop.remove();
     },
   };
