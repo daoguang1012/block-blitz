@@ -12,7 +12,7 @@
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #7 | [M1] 核心共享契约、固定步长主循环、键鼠输入与地图加载器（M1-1） | Sol | `node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-1-sol-core-contracts-loop-input-map` | `feat/7-core-contracts-loop-input` | — | 🛠️ 开发中 |
+| #7 | [M1] 核心共享契约、固定步长主循环、键鼠输入与地图加载器（M1-1） | Sol（作者）/ Astra（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-1-sol-core-contracts-loop-input-map`<br>R1 审查：`node:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-1-astra-review-r1` | `feat/7-core-contracts-loop-input` | [#8](https://github.com/daoguang1012/block-blitz/pull/8)（`a746877`，121 单测 ✅） | 🔍 Astra 第 1 轮审查进行中 |
 
 ## M1 单机核心拆解计划
 
