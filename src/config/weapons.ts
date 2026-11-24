@@ -1,0 +1,35 @@
+export const WEAPON_CONFIG = {
+  blaster: {
+    bodyDamage: 12,
+    headDamage: 18,
+    shotsPerSecond: 8,
+    magazineSize: 30,
+  },
+  pan: { damage: 50, attacksPerSecond: 1.6, range: 2 },
+  scatter: {
+    bodyDamage: 8,
+    headDamage: 12,
+    pellets: 8,
+    shotsPerSecond: 1.1,
+    magazineSize: 6,
+    pickupAmmo: 18,
+    falloffStart: 10,
+  },
+  boomer: {
+    directDamage: 80,
+    maxSplashDamage: 60,
+    shotsPerSecond: 1,
+    magazineSize: 1,
+    pickupAmmo: 6,
+    projectileSpeed: 25,
+    splashRadius: 3.5,
+    selfDamageMultiplier: 0.3,
+  },
+  rail: {
+    bodyDamage: 70,
+    headDamage: 100,
+    shotsPerSecond: 0.8,
+    magazineSize: 1,
+    pickupAmmo: 5,
+  },
+} as const;
