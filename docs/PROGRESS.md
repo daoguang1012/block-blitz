@@ -6,13 +6,13 @@
 
 - **当前里程碑**：M0 骨架 & 风险验证（进行中）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ （M0-1 合并后生效）
-- **下一步**：等待 M0-1（#1）Sol 开发完成 → 交 Astra 审查 → 合并后并行创建并派发 M0-2（联机 spike）与 M0-3（菜单 UI 外壳）
+- **下一步**：等待 Astra 完成 PR #2（#1）审查 → 若通过则合并 PR #2 → 并行创建并派发 M0-2（联机 spike）与 M0-3（菜单 UI 外壳）
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #1 | [M0] 工程脚手架与部署管线 | Sol | `node:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-1-sol-scaffold` | `feat/1-project-scaffold` | — | 开发中 |
+| #1 | [M0] 工程脚手架与部署管线 | Sol（作者）/ Astra（审查） | 作者：`node:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-1-sol-scaffold`（已完成）<br>审查：`node:delegated-task:command%3Amcp%3A18e34d0e-73ec-4f7e-b61c-6d962258b714%3Adelegate-task%3Am0-1-astra-review-r1` | `feat/1-project-scaffold` | [#2](https://github.com/daoguang1012/block-blitz/pull/2)（CI ✅） | Astra 第 1 轮审查中 |
 
 ## 里程碑总览
 
@@ -27,6 +27,7 @@
 
 ## 已完成（最近 10 条）
 
+- 2026-11-24 Sol 完成 Issue #1 开发并提交 PR #2（CI 全绿），已派发 Astra 进行第 1 轮审查
 - 2026-11-24 创建 Issue #1（M0-1 工程脚手架与部署管线）并派发给 Sol
 - 2026-11-24 仓库初始化：GDD v0.1 定稿、调度手册、协作规范、GitHub 仓库/标签/里程碑/Pages 配置
 
