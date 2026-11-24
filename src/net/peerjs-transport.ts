@@ -23,6 +23,7 @@ type Link = {
 
 const CONNECTION_TIMEOUT =
   'WebRTC connection timed out. Try another network or configure TURN.';
+const FRAME_ENCODER = new TextEncoder();
 
 export class PeerJsTransport extends TransportSession {
   private peer?: Peer;
@@ -42,7 +43,9 @@ export class PeerJsTransport extends TransportSession {
     return this.start(CONNECTION_TIMEOUT, (ready) => {
       this.joinReady = ready;
       const hostId = roomPeerId(roomCode);
-      this.openPeer(undefined, (peer) => {
+      // An explicit ID prevents PeerJS from starting a socket after a late ID lookup.
+      const clientId = `${NET_CONFIG.peerIdPrefix}c-${crypto.randomUUID()}`;
+      this.openPeer(clientId, (peer) => {
         const link = this.createLink(hostId);
         this.attach(
           link,
@@ -112,14 +115,14 @@ export class PeerJsTransport extends TransportSession {
   }
 
   private openPeer(
-    id: string | undefined,
+    id: string,
     onOpen: (peer: Peer) => void,
     onCollision?: () => void,
   ): void {
     const options = {
       config: { iceServers: [{ urls: NET_CONFIG.stunUrl }, ...TURN_SERVERS] },
     };
-    const peer = id ? new Peer(id, options) : new Peer(options);
+    const peer = new Peer(id, options);
     this.peer = peer;
 
     peer.on('open', () => {
@@ -310,8 +313,24 @@ export class PeerJsTransport extends TransportSession {
     frame: { kind: 'ready' | 'leave' } | { kind: 'data'; data: unknown },
   ): boolean {
     try {
-      void connection.send(frame);
-      return true;
+      const bytes = FRAME_ENCODER.encode(JSON.stringify(frame)).byteLength;
+      if (bytes >= NET_CONFIG.peerJsJsonFrameLimitBytes) {
+        throw new RangeError(
+          `PeerJS JSON frame is ${bytes} bytes and must be smaller than ${NET_CONFIG.peerJsJsonFrameLimitBytes} bytes.`,
+        );
+      }
+
+      let rejected = false;
+      const markRejected = () => {
+        rejected = true;
+      };
+      connection.on('error', markRejected);
+      try {
+        void connection.send(frame);
+        return !rejected && connection.open;
+      } finally {
+        connection.off('error', markRejected);
+      }
     } catch (error) {
       if (!this.disposed) this.events.emit('error', toError(error));
       return false;

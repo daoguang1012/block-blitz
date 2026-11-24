@@ -1,6 +1,7 @@
 import { NET_CONFIG, NET_SPIKE_CONFIG } from '../config/net';
 import { LocalTransport } from './local-transport';
 import { normalizeRoomCode } from './room-code';
+import { SpikePings } from './spike-pings';
 import { SPIKE_TEXT as text } from './spike-strings';
 import {
   isRecord,
@@ -22,7 +23,7 @@ type Burst = {
 };
 type PeerStats = {
   rtt?: number;
-  ping?: { id: number; start: number };
+  pings: SpikePings;
   bursts: Partial<Record<TransportChannel, Burst>>;
 };
 
@@ -234,7 +235,7 @@ export function initNetSpike(root: HTMLElement): void {
         : base;
       transport = session;
       session.on('peerJoin', ({ peerId }) => {
-        peers.set(peerId, { bursts: {} });
+        peers.set(peerId, { pings: new SpikePings(), bursts: {} });
         log(`${text.peerJoined} · ${peerId}`);
         queueRender();
       });
@@ -281,13 +282,10 @@ export function initNetSpike(root: HTMLElement): void {
     if (!stats || !isRecord(data)) return;
     if (data.kind === 'ping' && typeof data.id === 'number') {
       transport?.send(peerId, 'reliable', { kind: 'pong', id: data.id });
-    } else if (
-      data.kind === 'pong' &&
-      stats.ping &&
-      data.id === stats.ping.id
-    ) {
-      stats.rtt = performance.now() - stats.ping.start;
-      stats.ping = undefined;
+    } else if (data.kind === 'pong' && typeof data.id === 'number') {
+      const rtt = stats.pings.receive(data.id, performance.now());
+      if (rtt === undefined) return;
+      stats.rtt = rtt;
       queueRender();
     } else if (data.kind === 'text' && typeof data.text === 'string') {
       counts[channel].received++;
@@ -349,8 +347,9 @@ export function initNetSpike(root: HTMLElement): void {
     for (const [peerId, stats] of peers) {
       const id = ++pingId;
       const start = performance.now();
+      stats.pings.expire(start);
       if (transport?.send(peerId, 'reliable', { kind: 'ping', id }))
-        stats.ping = { id, start };
+        stats.pings.sent(id, start);
     }
   }
 

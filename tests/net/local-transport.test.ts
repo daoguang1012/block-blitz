@@ -5,6 +5,7 @@ import { roomPeerId } from '../../src/net/room-code';
 import type { TransportEvents } from '../../src/net/transport';
 
 const sessions: LocalTransport[] = [];
+const disconnectMs = NET_CONFIG.disconnectTimeoutSeconds * 1000;
 
 function local(): LocalTransport {
   const transport = new LocalTransport();
@@ -140,6 +141,80 @@ describe('LocalTransport over BroadcastChannel', () => {
       expect.objectContaining({ kind: 'leave', to: roomPeerId(code) }),
     );
     expect(connected.send(roomPeerId(code), 'reliable', 'offline')).toBe(false);
+  });
+
+  it('reclaims the slot of a client that vanishes without sending leave', async () => {
+    vi.useFakeTimers();
+    const host = local();
+    const code = await host.host();
+    const hostId = roomPeerId(code);
+    const liveClients = Array.from(
+      { length: NET_CONFIG.maxPlayers - 2 },
+      local,
+    );
+    await Promise.all(liveClients.map((client) => client.join(code)));
+    const joined = vi.fn();
+    const left = vi.fn();
+    host.on('peerJoin', joined);
+    host.on('peerLeave', left);
+
+    const vanishedId = 'vanished-client';
+    const vanished = new BroadcastChannel(hostId);
+    try {
+      vanished.postMessage({ kind: 'join', from: vanishedId, to: hostId });
+      await vi.waitFor(() =>
+        expect(joined).toHaveBeenCalledExactlyOnceWith({ peerId: vanishedId }),
+      );
+      await expect(local().join(code)).rejects.toThrow('Room is full');
+    } finally {
+      vanished.close();
+    }
+
+    await vi.advanceTimersByTimeAsync(
+      disconnectMs - NET_CONFIG.localHeartbeatIntervalMs,
+    );
+    expect(left).not.toHaveBeenCalled();
+    // The last message can arrive between heartbeat ticks.
+    await vi.advanceTimersByTimeAsync(NET_CONFIG.localHeartbeatIntervalMs * 2);
+    expect(left).toHaveBeenCalledExactlyOnceWith({ peerId: vanishedId });
+    expect(host.send(vanishedId, 'reliable', 'offline')).toBe(false);
+    await expect(local().join(code)).resolves.toBeUndefined();
+  });
+
+  it('disconnects the client and clears its heartbeat when the host vanishes', async () => {
+    vi.useFakeTimers();
+    const code = 'K7QX';
+    const hostId = roomPeerId(code);
+    const vanished = new BroadcastChannel(hostId);
+    vanished.onmessage = ({
+      data,
+    }: MessageEvent<{ kind: string; from: string }>) => {
+      if (data.kind === 'join')
+        vanished.postMessage({ kind: 'accept', from: hostId, to: data.from });
+    };
+
+    const client = local();
+    const left = vi.fn();
+    const disconnected = vi.fn();
+    client.on('peerLeave', left);
+    client.on('disconnect', disconnected);
+    try {
+      await client.join(code);
+    } finally {
+      vanished.close();
+    }
+    await vi.advanceTimersByTimeAsync(
+      disconnectMs - NET_CONFIG.localHeartbeatIntervalMs,
+    );
+    expect(disconnected).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(NET_CONFIG.localHeartbeatIntervalMs);
+    expect(left).toHaveBeenCalledExactlyOnceWith({ peerId: hostId });
+    expect(disconnected).toHaveBeenCalledExactlyOnceWith({
+      scope: 'transport',
+      reason: 'Host timed out.',
+    });
+    expect(client.send(hostId, 'reliable', 'offline')).toBe(false);
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it('times out waiting for an absent host and reports the same error', async () => {

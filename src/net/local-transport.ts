@@ -9,7 +9,7 @@ import {
 } from './transport';
 
 type LocalOutgoing = { to: string } & (
-  | { kind: 'join' | 'accept' | 'full' | 'leave' }
+  | { kind: 'join' | 'accept' | 'full' | 'leave' | 'heartbeat' }
   | { kind: 'data'; channel: TransportChannel; data: unknown }
 );
 type LocalFrame = LocalOutgoing & { from: string };
@@ -19,8 +19,9 @@ export class LocalTransport extends TransportSession {
   private releaseRoom?: () => void;
   private localId = '';
   private hostId = '';
-  private readonly peers = new Set<string>();
+  private readonly peers = new Map<string, number>();
   private joinReady?: () => void;
+  private heartbeatTimer?: ReturnType<typeof setInterval>;
 
   host(): Promise<string> {
     return this.start('Local room creation timed out.', (ready) => {
@@ -87,6 +88,10 @@ export class LocalTransport extends TransportSession {
       this.receive(data);
     this.channel.onmessageerror = () =>
       this.events.emit('error', new Error('Invalid local message.'));
+    this.heartbeatTimer = setInterval(
+      () => this.heartbeat(),
+      NET_CONFIG.localHeartbeatIntervalMs,
+    );
   }
 
   send(peerId: string, channel: TransportChannel, data: unknown): boolean {
@@ -101,8 +106,11 @@ export class LocalTransport extends TransportSession {
   }
 
   protected close(): void {
+    clearInterval(this.heartbeatTimer);
+    this.heartbeatTimer = undefined;
     if (this.joinReady) this.post({ kind: 'leave', to: this.hostId });
-    for (const peerId of this.peers) this.post({ kind: 'leave', to: peerId });
+    for (const peerId of this.peers.keys())
+      this.post({ kind: 'leave', to: peerId });
     this.peers.clear();
     this.joinReady = undefined;
     this.channel?.close();
@@ -137,20 +145,16 @@ export class LocalTransport extends TransportSession {
       this.addPeer(from);
     } else if (this.joinReady && kind === 'full') {
       this.fail(new Error('Room is full.'));
-    } else if (kind === 'leave' && this.peers.delete(from)) {
-      this.events.emit('peerLeave', { peerId: from });
-      if (!isHost && !this.disposed) {
-        this.dispose();
-        this.events.emit('disconnect', {
-          scope: 'transport',
-          reason: 'Host disconnected.',
-        });
-      }
+    } else if (kind === 'leave') {
+      this.removePeer(from, 'Host disconnected.');
+    } else if (kind === 'heartbeat' && this.peers.has(from)) {
+      this.peers.set(from, performance.now());
     } else if (
       kind === 'data' &&
       this.peers.has(from) &&
       isTransportChannel(frame.channel)
     ) {
+      this.peers.set(from, performance.now());
       this.events.emit('message', {
         peerId: from,
         channel: frame.channel,
@@ -160,7 +164,28 @@ export class LocalTransport extends TransportSession {
   }
 
   private addPeer(peerId: string): void {
-    this.peers.add(peerId);
+    this.peers.set(peerId, performance.now());
     this.events.emit('peerJoin', { peerId });
+  }
+
+  private heartbeat(): void {
+    const now = performance.now();
+    const timeoutMs = NET_CONFIG.disconnectTimeoutSeconds * 1000;
+    for (const [peerId, lastSeen] of this.peers) {
+      if (now - lastSeen >= timeoutMs) {
+        this.removePeer(peerId, 'Host timed out.');
+      } else {
+        this.post({ kind: 'heartbeat', to: peerId });
+      }
+    }
+  }
+
+  private removePeer(peerId: string, reason: string): void {
+    if (!this.peers.delete(peerId)) return;
+    this.events.emit('peerLeave', { peerId });
+    if (this.localId !== this.hostId && !this.disposed) {
+      this.dispose();
+      this.events.emit('disconnect', { scope: 'transport', reason });
+    }
   }
 }
