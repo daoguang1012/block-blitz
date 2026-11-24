@@ -4,22 +4,22 @@
 
 ## 当前状态
 
-- **当前里程碑**：M0 骨架 & 风险验证（进行中：M0-1 已上线；PR #5 第 3 轮复审与 PR #6 第 2 轮复审并行执行中）
+- **当前里程碑**：M0 骨架 & 风险验证（阻塞中：全部代码与审查修复均已完成且 CI 全绿，仅剩最后复审时再次触发 Codex 额度上限）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ （M0-1 已上线生效）
-- **下一步**：等待 Astra 完成 PR #5 与 PR #6 复审 → 合并两项 PR 触发 GitHub Pages 部署 → 派 Astra（`xhigh`）做 M0 里程碑验收 → 请产品负责人真机测试（M0-4）
+- **下一步**：等待产品负责人决定（① 临时用非作者模型完成最后增量复审；② 指定时间定时等待 Codex 恢复；或 ③ Carbon 核验增量修复后直接合并）→ 合并 PR #5 与 PR #6 自动部署 Pages → 请产品负责人真机测试（M0-4）
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #3 | [M0] PeerJS 联机 Spike 与 Transport 抽象 | Sol（作者）/ Astra（复审） | 作者：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Athread-send%3Am0-2-sol-fix-r1`（已完成）<br>复审：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Adelegate-task%3Am0-2-astra-review-r2` | `feat/3-net-spike` | [#6](https://github.com/daoguang1012/block-blitz/pull/6)（CI ✅） | Astra 第 2 轮复审中 |
-| #4 | [M0] 菜单 UI 外壳、Hash 路由与本地设置 | Neon（作者）/ Astra（终审） | 作者：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Athread-send%3Am0-3-neon-fix-r2`（已完成）<br>复审：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Adelegate-task%3Am0-3-astra-review-r3` | `feat/4-menu-ui-shell` | [#5](https://github.com/daoguang1012/block-blitz/pull/5)（CI ✅） | Astra 第 3 轮复审中 |
+| #3 | [M0] PeerJS 联机 Spike 与 Transport 抽象 | Sol（作者）/ Astra（复审） | 作者修复：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Athread-send%3Am0-2-sol-fix-r1`（已完成）<br>复审（中断）：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Adelegate-task%3Am0-2-astra-review-r2` | `feat/3-net-spike` | [#6](https://github.com/daoguang1012/block-blitz/pull/6)（CI ✅，36 单测 ✅） | ⚠️ 第 1 轮 4 项修复已就绪，第 2 轮复审因 Codex 额度用尽中断 |
+| #4 | [M0] 菜单 UI 外壳、Hash 路由与本地设置 | Neon（作者）/ Astra（终审） | 作者修复：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Athread-send%3Am0-3-neon-fix-r2`（已完成）<br>终审（中断）：`node:delegated-task:command%3Amcp%3Ab3e6a1f3-ff35-4166-bfb8-6164abff03ea%3Adelegate-task%3Am0-3-astra-review-r3` | `feat/4-menu-ui-shell` | [#5](https://github.com/daoguang1012/block-blitz/pull/5)（CI ✅，29 单测 ✅） | ⚠️ 两轮审查共 7 项修复已全部就绪，第 3 轮终审因 Codex 额度用尽中断 |
 
 ## 里程碑总览
 
 | 里程碑 | 状态 | 验收报告 |
 |---|---|---|
-| M0 骨架 & 风险验证 | 🔄 进行中（1/3 已合入，2/3 并行复审中） | — |
+| M0 骨架 & 风险验证 | ⏸️ 代码全部就绪，待复审收尾（Codex 额度阻塞） | — |
 | M1 单机核心 | ⏳ | — |
 | M2 联机 MVP | ⏳ | — |
 | M3 内容 | ⏳ | — |
@@ -28,22 +28,22 @@
 
 ## 已完成（最近 10 条）
 
-- 2026-11-24 Sol 完成 PR #6 第 1 轮审查全部 4 项修复并推送（CI 全绿，36/36 单测通过），已派发 Astra 第 2 轮复审
-- 2026-11-24 Neon 完成 PR #5 第 2 轮审查修复并推送（CI 全绿，29/29 单测通过），已派发 Astra 第 3 轮复审
-- 2026-11-24 Astra 完成 PR #5 第 2 轮复审（检出横屏徽标样式顺序问题）
-- 2026-11-24 Astra 完成 PR #6 第 1 轮审查（REQUEST_CHANGES）
-- 2026-11-24 PR #2（Issue #1 工程脚手架与部署管线）合并入 `main`，GitHub Pages 自动部署成功
+- 2026-11-24 Sol 完成 PR #6 第 1 轮审查全部 4 项修复并推送（`7911803`，CI 全绿，36/36 单测通过）
+- 2026-11-24 Neon 完成 PR #5 第 2 轮审查全部 2 项修复并推送（`fb682a7`，CI 全绿，29/29 单测通过）
+- 2026-11-24 Astra 完成 PR #5 第 2 轮复审（确认第 1 轮 5 项全过，检出横屏版本徽标样式覆盖问题）
+- 2026-11-24 Astra 完成 PR #6 第 1 轮审查（REQUEST_CHANGES：4 项改进建议）
+- 2026-11-24 14:28 定时任务按期触发：Sol 提交 PR #6，Astra 完成 PR #5 第 1 轮审查，Neon 完成第 1 轮 5 项修复
 
 ## 决策记录
 
 | 日期 | 决策 | 理由 |
 |---|---|---|
-| 2026-11-24 | 针对 PeerJS 1.5.5 `reliable: false` 实测仅设 `ordered: false`（未限重传）：M2 继续使用 PeerJS 双通道方案，并在应用层对高频 `state`/`snap` 按 `seq`/`tick` 丢弃旧包；保留 `Transport` 抽象以便后续按需在内部切换原生 `maxRetransmits: 0` | `ordered: false` 已消除队头阻塞（主要卡顿来源），6 人小包场景无需引入自建信令/SDP 协商复杂度 |
-| 2026-11-24 | 不切换替代模型，保持 Sol（`gpt-6.2-sol`）/ Neon（`gemini-4-neon`）/ Astra（`gpt-6.2-astra`）原定分工，定时 3h15m 后自动续跑 | 产品负责人确认：保持团队模型一致性，等待 Codex 额度恢复 |
-| 2026-11-24 | 采纳 PR #5 中 `#ui-root > :not(.bb-ui) { pointer-events: auto; }` 的兼容规则；后续 M1/M2 在 `src/shared/types.ts` 定义全局事件契约供 UI 与核心层通过 `EventBus` 解耦通信 | 既保持菜单空白区透传 3D 背景，又确保同样挂载于 `#ui-root` 的 `?spike=net` 诊断页无需额外样式即可点击交互 |
-| 2026-11-24 | Issue #3（`?spike=net`）作为位于 `src/net/` 的开发者诊断页，特批其诊断文案置于 `src/net/` 内部常量、独立样式置于 `src/styles/net-spike.css` | 遵守 ESLint 禁止 `src/net/**` 导入 `src/ui/**` 的架构防线，同时与并行修改 `src/ui/strings.ts` 和 `src/styles/main.css` 的 Issue #4 实现零文件重叠 |
-| 2026-11-24 | 在 M0-1 中预置 `src/ui/index.ts`（`initUI`）与 `src/net/spike.ts`（`initNetSpike`，通过 `?spike=net` 分流）挂载入口 | 让 M0-2（Sol）与 M0-3（Neon）并行开发时无需同时修改 `src/main.ts` 或 `index.html`，消除合并冲突 |
+| 2026-11-24 | 后续派发 Astra 复审（R2/R3）时明确限定只做增量 diff 与问题点回归验证，避免重复全量浏览器套件以节约 Codex 额度 | 14:28–15:03 期间连续 5 个高强度 Codex 任务快速耗尽单窗口配额 |
+| 2026-11-24 | 针对 PeerJS 1.5.5 `reliable: false` 实测仅设 `ordered: false`（未限重传）：M2 继续使用 PeerJS 双通道方案，并在应用层对高频 `state`/`snap` 按 `seq`/`tick` 丢弃旧包 | `ordered: false` 已消除队头阻塞，6 人小包场景无需引入自建信令/SDP 协商复杂度 |
+| 2026-11-24 | 不切换替代模型，保持 Sol（`gpt-6.2-sol`）/ Neon（`gemini-4-neon`）/ Astra（`gpt-6.2-astra`）原定分工 | 产品负责人确认：保持团队模型一致性 |
+| 2026-11-24 | 采纳 PR #5 中 `#ui-root > :not(.bb-ui) { pointer-events: auto; }` 的兼容规则 | 兼顾 3D 背景透传与 `?spike=net` 诊断页点击交互 |
+| 2026-11-24 | 在 M0-1 中预置 `src/ui/index.ts` 与 `src/net/spike.ts` 挂载入口 | 消除 M0-2 与 M0-3 并行开发的合并冲突 |
 
 ## 阻塞 / 待用户处理
 
-- 无
+- **Codex（ChatGPT）额度再次触顶**（15:03）：M0 所有功能代码及审查修复均已由原模型（Sol + Neon）编写完毕并通过 CI（PR #5 `fb682a7`、PR #6 `7911803`），仅在最后增量复审阶段触发 `Your ChatGPT usage limit was reached`，待产品负责人选择收尾方式。
