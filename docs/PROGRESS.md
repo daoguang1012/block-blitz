@@ -4,17 +4,16 @@
 
 ## 当前状态
 
-- **当前里程碑**：M1 单机核心（全速推进中：按产品负责人最新指示，审查职责改由独立 `gemini-4-carbon` 承担，Codex 配额专供 Sol 写核心代码；当前正双线并行审查 PR #13 与 PR #11）
+- **当前里程碑**：M1 单机核心（#7 与 #10 Block Plaza 地图/渲染已合入 `main` `ee27fd9`；当前双线并行审查 PR #13 与 PR #14）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ ｜ 联机诊断页：https://daoguang1012.github.io/block-blitz/?spike=net
-- **下一步**：PR #13 与 PR #11 审查通过合入 → 派发 Sol 开发 M1-4（武器系统 + 移动靶）并同步审查合入 PR #14（触屏输入 + 战斗 HUD）→ Sol 开发 M1-6（训练场端到端集成 + 视角模型 + 特效，Neon 并行补交叉单测）→ M1 里程碑验收上线 → 请产品负责人真机试玩训练场
+- **下一步**：PR #13 审查通过合入 → 立即派发 Sol 开发 M1-4（武器系统 + 移动靶模拟）→ PR #14 与 M1-4 合入后派发 Sol 开发 M1-6（训练场端到端集成 + 视角模型 + 特效，Neon 并行补齐交叉单测）→ M1 里程碑验收上线 → 请产品负责人真机试玩训练场
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
 | #9 | [M1] 世界碰撞、射线检测与第一人称玩家控制器（M1-2） | Sol（作者）/ Carbon（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-2-sol-collision-raycast-controller`<br>R1 审查：`node:delegated-task:command%3Amcp%3A83bbb25c-14c3-4a23-8d24-e00d5a9612e9%3Adelegate-task%3Am1-2-carbon-review-pr13-r1` | `feat/9-collision-raycast-controller` | [#13](https://github.com/daoguang1012/block-blitz/pull/13)（`db1f834`，CI ✅，150 单测 ✅） | 🔍 Carbon（`gemini-4-carbon`）R1 审查进行中 |
-| #10 | [M1] Block Plaza 地图数据、画质分档渲染器与静态场景几何合并（M1-3） | Neon（作者）/ Carbon（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-3-neon-block-plaza-renderer-scene`<br>R1 审查：`node:delegated-task:command%3Amcp%3A83bbb25c-14c3-4a23-8d24-e00d5a9612e9%3Adelegate-task%3Am1-3-carbon-review-pr11-r1` | `feat/10-block-plaza-scene-builder` | [#11](https://github.com/daoguang1012/block-blitz/pull/11)（`54e8fe5`，CI ✅，135 单测 ✅） | 🔍 Carbon（`gemini-4-carbon`）R1 审查进行中 |
-| #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（作者）/ Carbon（待审） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-5-neon-touch-input-hud-pause`（已完成） | `feat/12-touch-input-battle-hud` | [#14](https://github.com/daoguang1012/block-blitz/pull/14)（`bd97728`，CI ✅，133 单测 ✅） | ⏳ 排队审查（待前 2 个审查槽位空出即刻启动） |
+| #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（作者）/ Carbon（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-5-neon-touch-input-hud-pause`<br>R1 审查：`node:delegated-task:command%3Amcp%3A83bbb25c-14c3-4a23-8d24-e00d5a9612e9%3Adelegate-task%3Am1-5-carbon-review-pr14-r1` | `feat/12-touch-input-battle-hud` | [#14](https://github.com/daoguang1012/block-blitz/pull/14)（`bd97728`，CI ✅，133 单测 ✅） | 🔍 Carbon（`gemini-4-carbon`）R1 审查进行中 |
 
 ## M1 单机核心拆解计划
 
@@ -32,7 +31,7 @@
 | 里程碑 | 状态 | 验收报告 |
 |---|---|---|
 | M0 骨架 & 风险验证 | ✅ 已完成（自动化验收 + 真机 4G 跨网验证全部 PASS，RTT 41.4 ms） | [docs/M0_ACCEPTANCE.md](M0_ACCEPTANCE.md) · [docs/NET_SPIKE.md](NET_SPIKE.md) |
-| M1 单机核心 | 🔄 进行中（#7 已合入；PR #13 / #11 正由 Carbon 并行审查，PR #14 候审） | — |
+| M1 单机核心 | 🔄 进行中（#7、#10 已合入 `main`；PR #13、#14 并行审查中） | — |
 | M2 联机 MVP | ⏳ | — |
 | M3 内容 | ⏳ | — |
 | M4 打磨 | ⏳ | — |
@@ -40,6 +39,7 @@
 
 ## 已完成（最近 10 条）
 
+- 2026-11-25 合并 PR #11（[#10] Block Plaza 地图数据、画质分档渲染器与静态场景几何合并，`ee27fd9`）：Carbon 首轮审查 `VERDICT: APPROVE`（0 Blocker / 0 Major，135/135 单测通过；3 项 Minor 记入 M1-6/M3）
 - 2026-11-24 Neon 完成 #12（M1-5 基础触屏输入与战斗 HUD / 暂停菜单）并提交 PR #14（`bd97728`，CI 全绿，133 项单测通过）
 - 2026-11-24 Sol 完成 #9（M1-2 世界碰撞、射线检测与第一人称玩家控制器）并提交 PR #13（`db1f834`，CI 全绿，150 项单测通过）
 - 2026-11-24 Neon 完成 #10（M1-3 Block Plaza 地图数据、画质渲染器与场景几何合并）并提交 PR #11（`54e8fe5`，CI 全绿，135 项单测通过）
