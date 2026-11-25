@@ -4,16 +4,19 @@
 
 ## 当前状态
 
-- **当前里程碑**：M1 单机核心（#7 与 #10 Block Plaza 地图/渲染已合入 `main` `ee27fd9`；当前双线并行审查 PR #13 与 PR #14）
+- **当前里程碑**：M1 单机核心（⏸️ **已按产品负责人要求暂停全部后台子任务**，释放本机资源供产品负责人打游戏；#7 与 #10 已合入 `main` `ee27fd9`）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ ｜ 联机诊断页：https://daoguang1012.github.io/block-blitz/?spike=net
-- **下一步**：PR #13 审查通过合入 → 立即派发 Sol 开发 M1-4（武器系统 + 移动靶模拟）→ PR #14 与 M1-4 合入后派发 Sol 开发 M1-6（训练场端到端集成 + 视角模型 + 特效，Neon 并行补齐交叉单测）→ M1 里程碑验收上线 → 请产品负责人真机试玩训练场
+- **下一步（恢复后一键继续）**：
+  1. 让 Sol 在 `feat/9-collision-raycast-controller`（PR #13）完成 R1 审查指出的 2 项边界修复（`collision.ts` 半球挑檐擦边、`raycast.ts` 贴脸受击框起点距离钳制为 0）→ Carbon R2 增量复审合并；
+  2. 并行由 Carbon（`gemini-4-carbon`）完成 PR #14（#12 触屏输入与战斗 HUD）R1 审查合并；
+  3. 派发 Sol 开发 M1-4（武器系统 + 移动靶，草稿已备好）→ M1-6（训练场端到端集成 + 视角武器模型 + 特效）→ M1 验收上线。
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #9 | [M1] 世界碰撞、射线检测与第一人称玩家控制器（M1-2） | Sol（修复中）/ Carbon（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-2-sol-collision-raycast-controller` | `feat/9-collision-raycast-controller` | [#13](https://github.com/daoguang1012/block-blitz/pull/13)（`db1f834`） | 🔧 Carbon R1 检出 2 项边界问题（半球挑檐擦边穿墙、贴脸受击框背靠墙遮挡），Sol 修复中 |
-| #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（作者）/ Carbon（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-5-neon-touch-input-hud-pause`<br>R1 审查：`node:delegated-task:command%3Amcp%3A83bbb25c-14c3-4a23-8d24-e00d5a9612e9%3Adelegate-task%3Am1-5-carbon-review-pr14-r1` | `feat/12-touch-input-battle-hud` | [#14](https://github.com/daoguang1012/block-blitz/pull/14)（`bd97728`，CI ✅，133 单测 ✅） | 🔍 Carbon（`gemini-4-carbon`）R1 审查进行中 |
+| #9 | [M1] 世界碰撞、射线检测与第一人称玩家控制器（M1-2） | Sol（待修）/ Carbon（已审 R1） | 原作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-2-sol-collision-raycast-controller`（已 `task_cancel` 暂停；恢复时若原线程不可续发，可新开 `delegate_task` checkout `feat/9-collision-raycast-controller` 修复） | `feat/9-collision-raycast-controller` | [#13](https://github.com/daoguang1012/block-blitz/pull/13)（`db1f834`，CI ✅） | ⏸️ 已暂停：Carbon R1 审查评论已发 PR #13（2 项边界修复），等恢复后继续修 |
+| #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（作者）/ Carbon（待审） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-5-neon-touch-input-hud-pause`（已完成） | `feat/12-touch-input-battle-hud` | [#14](https://github.com/daoguang1012/block-blitz/pull/14)（`bd97728`，CI ✅，133 单测 ✅） | ⏸️ 已暂停：待恢复后重新派发 Carbon R1 审查 |
 
 ## M1 单机核心拆解计划
 
@@ -31,7 +34,7 @@
 | 里程碑 | 状态 | 验收报告 |
 |---|---|---|
 | M0 骨架 & 风险验证 | ✅ 已完成（自动化验收 + 真机 4G 跨网验证全部 PASS，RTT 41.4 ms） | [docs/M0_ACCEPTANCE.md](M0_ACCEPTANCE.md) · [docs/NET_SPIKE.md](NET_SPIKE.md) |
-| M1 单机核心 | 🔄 进行中（#7、#10 已合入 `main`；PR #13、#14 并行审查中） | — |
+| M1 单机核心 | ⏸️ 已手动暂停（#7、#10 已合入 `main`；PR #13 R1 审查已完成待修，PR #14 待审） | — |
 | M2 联机 MVP | ⏳ | — |
 | M3 内容 | ⏳ | — |
 | M4 打磨 | ⏳ | — |
@@ -69,4 +72,4 @@
 
 ## 阻塞 / 待用户处理
 
-- 暂无待用户处理事项（团队正全自动推进 **M1 单机核心**，完成后请产品负责人真机试玩训练场）。
+- **已按用户要求暂停全部后台任务**（19:57）：本机零后台构建/测试/子代理运行；打完游戏直接发一句「继续」即可无缝续跑。
