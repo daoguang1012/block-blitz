@@ -25,7 +25,7 @@
 | **Carbon**（你） | 主控：拆任务、建 Issue、派活、守接口、合并、记进度 | 本会话：Antigravity · `gemini-4-carbon`，thought_level `high` | — |
 | **Sol** | 主力开发：core / world / net / game 核心 | `{"providerInstanceId":"codex","model":"gpt-6.2-sol","options":[{"id":"reasoningEffort","value":"high"}]}` | 默认 `high`；联机/碰撞/命中校验等难题用 `xhigh` |
 | **Neon** | 协助开发：UI / 触屏 / 音效 / 地图 / 特效 / 机器人 / 测试 | `{"providerInstanceId":"antigravity","model":"gemini-4-neon","options":[{"id":"thought_level","value":"high"}]}` | 默认 `high` |
-| **Astra** | 审查：PR 审查、里程碑验收，不写功能代码 | `{"providerInstanceId":"codex","model":"gpt-6.2-astra","options":[{"id":"reasoningEffort","value":"high"}]}` | 默认 `high`；里程碑验收用 `xhigh` |
+| **Astra（由 Carbon 模型执行）** | 审查：PR 审查、里程碑验收，不写功能代码 | `{"providerInstanceId":"antigravity","model":"gemini-4-carbon","options":[{"id":"thought_level","value":"high"}]}` | 默认 `high`（2026-11-25 产品负责人决定停用 `gpt-6.2-astra`，改由独立 `gemini-4-carbon` worktree 执行审查与验收，Codex 配额专供 Sol 写核心代码） |
 
 > 首次 `delegate_task` 前调用一次 `orchestrator_capabilities` 核对模型 ID 与 options 格式；若与上表不符，以工具返回为准并更新本表。
 > 某个模型不可用时：**不要擅自换成别的模型**，在 `PROGRESS.md` 记录并告知用户。
