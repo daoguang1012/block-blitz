@@ -4,16 +4,15 @@
 
 ## 当前状态
 
-- **当前里程碑**：M1 单机核心（#7、#9、#10 三大底层任务均已合入 `main` `7688fb8`；当前双线并行：Sol 开发 #15 武器系统与移动靶模拟 + Neon 修复 PR #14 触屏暂停弹窗层叠顺序）
+- **当前里程碑**：M1 单机核心（4/6 任务已合入 `main` `9c79385`：#7、#9、#10、#12；当前 Carbon 正审查 PR #16 武器系统与移动靶模拟）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ ｜ 联机诊断页：https://daoguang1012.github.io/block-blitz/?spike=net
-- **下一步**：PR #14 修复复审合入 + #15 审查合入 → Sol 开发最终收口任务 M1-6（训练场端到端集成 + 第一人称视角武器模型 + 弹道/命中火花特效，Neon 并行编写碰撞/武器交叉单测）→ M1 里程碑验收上线 → 请产品负责人真机试玩训练场
+- **下一步**：PR #16（#15 武器与移动靶）审查通过合入 → 双线并行派发收口批次：Sol 开发 M1-6（训练场端到端集成 + 第一人称视角武器模型 + 弹道/命中火花特效）+ Neon 开发 M1-7（碰撞/控制器/武器/移动靶交叉验证单测）→ M1 里程碑验收上线 → 请产品负责人真机试玩训练场
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（已修）/ Carbon（复审） | 作者修复：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Athread-send%3Am1-5-neon-fix-pr14-r1`（已完成）<br>R2 复审：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-5-carbon-review-pr14-r2` | `feat/12-touch-input-battle-hud` | [#14](https://github.com/daoguang1012/block-blitz/pull/14)（`f456133`，135 单测 ✅） | 🔍 Neon 已推送层叠上下文与禁用态修复，Carbon R2 复审中 |
-| #15 | [M1] 武器框架（爆能枪 + 平底锅）与训练场移动靶模拟（M1-4） | Sol（`high`） | `node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-4-sol-weapons-and-targets` | `feat/15-weapons-and-targets` | — | 🛠️ 开发中 |
+| #15 | [M1] 武器框架（爆能枪 + 平底锅）与训练场移动靶模拟（M1-4） | Sol（作者）/ Carbon（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-4-sol-weapons-and-targets`<br>R1 审查：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-4-carbon-review-pr16-r1` | `feat/15-weapons-and-targets` | [#16](https://github.com/daoguang1012/block-blitz/pull/16)（`8952323`，192 单测 ✅） | 🔍 Carbon（`gemini-4-carbon`）R1 审查进行中 |
 
 ## M1 单机核心拆解计划
 
@@ -31,7 +30,7 @@
 | 里程碑 | 状态 | 验收报告 |
 |---|---|---|
 | M0 骨架 & 风险验证 | ✅ 已完成（自动化验收 + 真机 4G 跨网验证全部 PASS，RTT 41.4 ms） | [docs/M0_ACCEPTANCE.md](M0_ACCEPTANCE.md) · [docs/NET_SPIKE.md](NET_SPIKE.md) |
-| M1 单机核心 | 🔄 进行中（#7、#9、#10 已合入 `main`；#15 开发与 PR #14 修复双线并行） | — |
+| M1 单机核心 | 🔄 进行中（#7、#9、#10、#12 已合入 `main`；PR #16 审查中，仅剩最后集成） | — |
 | M2 联机 MVP | ⏳ | — |
 | M3 内容 | ⏳ | — |
 | M4 打磨 | ⏳ | — |
@@ -39,6 +38,8 @@
 
 ## 已完成（最近 10 条）
 
+- 2026-11-26 合并 PR #14（[#12] 基础触屏输入与战斗 HUD / 暂停菜单，`9c79385`）：Neon 修复层叠上下文与禁用态后经 Carbon R2 复审 `VERDICT: APPROVE`（0 Blocker / 0 Major）
+- 2026-11-26 Sol 完成 #15（M1-4 武器框架与移动靶模拟）并提交 PR #16（`8952323`，192 项单测通过）
 - 2026-11-26 合并 PR #13（[#9] 世界碰撞、射线检测与第一人称玩家控制器，`7688fb8`）：Sol 修复 2 项碰撞/贴脸射线边界问题后经 Carbon R2 复审 `VERDICT: APPROVE`（0 Blocker / 0 Major，156 项单测通过）
 - 2026-11-25 合并 PR #11（[#10] Block Plaza 地图数据、画质分档渲染器与静态场景几何合并，`ee27fd9`）：Carbon 首轮审查 `VERDICT: APPROVE`（0 Blocker / 0 Major，135/135 单测通过；3 项 Minor 记入 M1-6/M3）
 - 2026-11-24 Neon 完成 #12（M1-5 基础触屏输入与战斗 HUD / 暂停菜单）并提交 PR #14（`bd97728`，CI 全绿，133 项单测通过）
