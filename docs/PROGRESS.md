@@ -12,7 +12,7 @@
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #9 | [M1] 世界碰撞、射线检测与第一人称玩家控制器（M1-2） | Sol（修复中）/ Carbon（审查） | R1 修复：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-2-sol-fix-pr13-r1-resume` | `feat/9-collision-raycast-controller` | [#13](https://github.com/daoguang1012/block-blitz/pull/13)（`db1f834`） | 🔧 Sol 正在修复 R1 审查指出的 2 项边界问题 |
+| #9 | [M1] 世界碰撞、射线检测与第一人称玩家控制器（M1-2） | Sol（已修）/ Carbon（复审） | R1 修复：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-2-sol-fix-pr13-r1-resume`（已完成）<br>R2 复审：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-2-carbon-review-pr13-r2` | `feat/9-collision-raycast-controller` | [#13](https://github.com/daoguang1012/block-blitz/pull/13)（`c0643e4`，156 单测 ✅） | 🔍 Sol 已推送 2 项修复与 6 条回归单测，Carbon R2 复审中 |
 | #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（作者）/ Carbon（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A6b4d88d3-d80e-4b01-9e7c-695166976cb5%3Adelegate-task%3Am1-5-neon-touch-input-hud-pause`<br>R1 审查：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-5-carbon-review-pr14-r1-resume` | `feat/12-touch-input-battle-hud` | [#14](https://github.com/daoguang1012/block-blitz/pull/14)（`bd97728`，CI ✅，133 单测 ✅） | 🔍 Carbon（`gemini-4-carbon`）R1 审查进行中 |
 
 ## M1 单机核心拆解计划
