@@ -1,4 +1,11 @@
-import { Color, Light, Mesh, type BufferGeometry, type Material } from 'three';
+import {
+  Color,
+  Light,
+  Mesh,
+  Vector3,
+  type BufferGeometry,
+  type Material,
+} from 'three';
 import { describe, expect, it, vi } from 'vitest';
 import blockPlazaRaw from '../../public/maps/block-plaza.json';
 import { MAP_DATA_CONFIG, MAP_RENDER_CONFIG } from '../../src/config/map';
@@ -130,12 +137,39 @@ describe('scene-builder', () => {
     built.applyQuality('low');
     expect(built.directionalLight.castShadow).toBe(false);
 
+    const ground = built.staticMeshes.find((mesh) =>
+      mesh.name.startsWith('static-ground'),
+    )!;
+    const groundMaterial = ground.material as Material;
+    const before = groundMaterial.version;
     built.applyQuality('high');
     expect(built.directionalLight.castShadow).toBe(true);
+    expect(groundMaterial.version).toBeGreaterThan(before);
     expect(built.directionalLight.shadow.mapSize.x).toBe(
       getQualityProfile('high').shadowMapSize,
     );
 
+    built.dispose();
+  });
+
+  it('covers all four plaza corners with the directional shadow camera', () => {
+    const map = loadBlockPlaza();
+    const built = buildMapScene(map);
+    built.scene.updateMatrixWorld(true);
+    const light = built.directionalLight;
+    light.shadow.updateMatrices(light);
+    for (const x of [-map.size[0] / 2, map.size[0] / 2]) {
+      for (const z of [-map.size[1] / 2, map.size[1] / 2]) {
+        const projected = new Vector3(x, 0, z).project(light.shadow.camera);
+        expect(
+          Math.max(
+            Math.abs(projected.x),
+            Math.abs(projected.y),
+            Math.abs(projected.z),
+          ),
+        ).toBeLessThanOrEqual(1);
+      }
+    }
     built.dispose();
   });
 

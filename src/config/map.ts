@@ -11,6 +11,7 @@ export interface MapMaterialPreset {
 export const MAP_DATA_CONFIG = {
   defaultMapId: 'block-plaza',
   defaultMapUrl: 'maps/block-plaza.json',
+  trainingSpawnIndex: 5,
   maxMergedStaticMeshes: 10,
 } as const;
 
@@ -55,7 +56,7 @@ export const MAP_RENDER_CONFIG = {
       color: '#fff6e3',
       intensity: 1.9,
       position: [26, 42, 18] as Vec3Tuple,
-      shadowBoundsPadding: 8,
+      shadowBoundsPadding: 13,
       shadowNear: 4,
       shadowFar: 130,
       shadowBias: -0.0005,
