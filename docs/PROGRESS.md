@@ -12,7 +12,7 @@
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（修复中）/ Carbon（审查） | 作者修复：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Athread-send%3Am1-5-neon-fix-pr14-r1` | `feat/12-touch-input-battle-hud` | [#14](https://github.com/daoguang1012/block-blitz/pull/14)（`bd97728`） | 🔧 Carbon R1 检出 `.bb-hud` 层叠上下文压住暂停菜单问题，Neon 修复中 |
+| #12 | [M1] 基础触屏输入（摇杆/视角/联动开火）与战斗 HUD / 暂停菜单（M1-5） | Neon（已修）/ Carbon（复审） | 作者修复：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Athread-send%3Am1-5-neon-fix-pr14-r1`（已完成）<br>R2 复审：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-5-carbon-review-pr14-r2` | `feat/12-touch-input-battle-hud` | [#14](https://github.com/daoguang1012/block-blitz/pull/14)（`f456133`，135 单测 ✅） | 🔍 Neon 已推送层叠上下文与禁用态修复，Carbon R2 复审中 |
 | #15 | [M1] 武器框架（爆能枪 + 平底锅）与训练场移动靶模拟（M1-4） | Sol（`high`） | `node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-4-sol-weapons-and-targets` | `feat/15-weapons-and-targets` | — | 🛠️ 开发中 |
 
 ## M1 单机核心拆解计划
