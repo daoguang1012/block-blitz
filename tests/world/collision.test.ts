@@ -78,6 +78,38 @@ describe('moveCapsule', () => {
     expect(out.blockedX).toBe(true);
   });
 
+  it('blocks turning into a 1.75 m overhang after grazing its edge', () => {
+    const overhang: AABB = { min: [0, 1.75, 0], max: [1, 2, 1] };
+    const boxes = [FLOOR, overhang];
+    const feet: Vec3Tuple = [-0.193649, 0, -1];
+    const out = createCapsuleContacts();
+    moveCapsule(feet, BODY, boxes, [0, 0, 1.5], out);
+    expect(feet[2]).toBeCloseTo(0.5, 8);
+    expect(out.blockedZ).toBe(false);
+
+    const startX = feet[0];
+    moveCapsule(feet, BODY, boxes, [0.5, 0, 0], out);
+    expect(feet[0]).toBe(startX);
+    expect(out.blockedX).toBe(true);
+  });
+
+  it.each([-1, 1])(
+    'blocks moving deeper into a 1 cm wall from side %i but allows backing out',
+    (side) => {
+      const wallFace = side < 0 ? WALL.min[0] : WALL.max[0];
+      const start = wallFace + side * (BODY.radius - 1e-5);
+      const feet: Vec3Tuple = [start, 0, 0];
+      const out = createCapsuleContacts();
+      moveCapsule(feet, BODY, [FLOOR, WALL], [-side, 0, 0], out);
+      expect(feet[0]).toBe(start);
+      expect(out.blockedX).toBe(true);
+
+      moveCapsule(feet, BODY, [FLOOR, WALL], [side, 0, 0], out);
+      expect(feet[0]).toBeCloseTo(start + side, 8);
+      expect(out.blockedX).toBe(false);
+    },
+  );
+
   it.each([
     { start: -0.5, speed: 40, wallFace: -0.4 },
     { start: 0.51, speed: -40, wallFace: 0.41 },

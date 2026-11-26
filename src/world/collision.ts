@@ -91,13 +91,16 @@ function sweepAxis(
 
     const reach = Math.sqrt(radiusSquared - gapSquared);
     const entry = direction > 0 ? spanMin - reach : spanMax + reach;
+    const mid = (spanMin + spanMax) / 2;
     if (
-      (entry - start) * direction < -contactEpsilon ||
-      (entry - end) * direction > 0
+      (entry - end) * direction > 0 ||
+      ((entry - start) * direction < -contactEpsilon &&
+        (mid - start) * direction <= 0)
     ) {
       continue;
     }
-    end = entry;
+    // Stop inward motion from an overlapping start without pushing it back.
+    end = direction > 0 ? Math.max(start, entry) : Math.min(start, entry);
     hit = boxes[index];
   }
 
@@ -198,7 +201,7 @@ export function findJumpPad(
 }
 
 /**
- * Move a non-overlapping capsule in place. Bounded substeps keep axis-separated
+ * Move a capsule in place. Bounded substeps keep axis-separated
  * sliding close to the intended path, and each axis sweep catches thin solids.
  * Contacts are overwritten. The caller owns velocity and reacts to the contacts.
  */

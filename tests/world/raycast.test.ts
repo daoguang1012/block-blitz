@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { AABB } from '../../src/shared/types';
+import type { AABB, Vec3Tuple } from '../../src/shared/types';
 import type { WorldBox } from '../../src/world/collision';
 import {
   raycastCharacter,
@@ -117,6 +117,40 @@ describe('raycastCharacter', () => {
     expect(
       raycastCharacter([0, 1.4, 0], [0, 0, -1], overlapping, 10, out)?.headshot,
     ).toBe(true);
+  });
+
+  it('hits from inside the expanded body when its exit is behind a wall', () => {
+    const origin: Vec3Tuple = [0, 1, -4.68];
+    const direction: Vec3Tuple = [0, 0, -1];
+    const backWall: AABB = { min: [-2, 0, -5.4], max: [2, 3, -5.3] };
+    const out = characterHit();
+    const wallDistance = raycastWorld(
+      origin,
+      direction,
+      [backWall],
+      2,
+      worldHit(),
+    )?.distance;
+    expect(wallDistance).toBeCloseTo(0.62);
+    expect(raycastCharacter(origin, direction, TARGET, 2, out, wallDistance)).toBe(
+      out,
+    );
+    expect(out).toEqual({ distance: 0, point: origin, headshot: false });
+  });
+
+  it('hits the head at the origin when aiming down into the body', () => {
+    const origin: Vec3Tuple = [0, 1.5, -5];
+    const out = characterHit();
+    expect(raycastCharacter(origin, [0, -0.2, -1], TARGET, 2, out)).toBe(out);
+    expect(out).toEqual({ distance: 0, point: origin, headshot: true });
+  });
+
+  it('prioritizes the head when the origin is inside both expanded hitboxes', () => {
+    const origin: Vec3Tuple = [0, 1.4, -5];
+    const out = characterHit();
+    expect(raycastCharacter(origin, [0, 0, -1], TARGET, 0, out)).toBe(out);
+    expect(out).toEqual({ distance: 0, point: origin, headshot: true });
+    expect(raycastCharacter(origin, [0, 0, -1], TARGET, 2, out, 0)).toBeUndefined();
   });
 
   it('blocks character hits at or behind a world hit while allowing unobstructed hits', () => {

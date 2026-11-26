@@ -28,6 +28,7 @@ function intersectAabb(
   box: AABB,
   scale: number,
   maxDistance: number,
+  hitMode: 'surface' | 'solid',
   normal?: Vec3Tuple,
 ): number {
   let enter = -Infinity;
@@ -60,9 +61,9 @@ function intersectAabb(
     if (enter > exit) return Infinity;
   }
 
-  // Inside a box the first forward surface is the exit face.
   const fromOutside = enter >= 0;
-  const distance = fromOutside ? enter : exit;
+  let distance = fromOutside ? enter : exit;
+  if (hitMode === 'solid' && !fromOutside && exit >= 0) distance = 0;
   if (
     !(distance >= 0 && distance <= maxDistance) ||
     !Number.isFinite(distance)
@@ -112,6 +113,7 @@ export function raycastWorld(
       box,
       1,
       distance,
+      'surface',
       out.normal,
     );
     if (hit === Infinity) continue;
@@ -126,7 +128,8 @@ export function raycastWorld(
 }
 
 /**
- * The closest expanded surface wins, with head taking equal-distance ties.
+ * The closest expanded hitbox wins, counting an inside start as distance zero.
+ * The head takes equal-distance ties.
  * Pass the nearest world hit distance to block hits at or behind that surface.
  */
 export function raycastCharacter(
@@ -148,6 +151,7 @@ export function raycastCharacter(
     hitboxes.head,
     PLAYER_CONFIG.headHitboxScale,
     limit,
+    'solid',
   );
   const body = intersectAabb(
     origin,
@@ -156,6 +160,7 @@ export function raycastCharacter(
     hitboxes.body,
     PLAYER_CONFIG.bodyHitboxScale,
     limit,
+    'solid',
   );
   const distance = Math.min(head, body);
   if (!(distance < worldDistance)) return undefined;
