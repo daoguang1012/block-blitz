@@ -4,15 +4,16 @@
 
 ## 当前状态
 
-- **当前里程碑**：M1 单机核心（4/6 任务已合入 `main` `9c79385`：#7、#9、#10、#12；当前 Carbon 正审查 PR #16 武器系统与移动靶模拟）
+- **当前里程碑**：M1 单机核心（最后收口批次双线并行中：#7、#9、#10、#12、#15 五大基础模块全部已合入 `main` `1780884`；当前 Sol 开发 #17 训练场端到端集成与视角武器/特效，Neon 并行编写 #18 实景交叉验证单测）
 - **线上地址**：https://daoguang1012.github.io/block-blitz/ ｜ 联机诊断页：https://daoguang1012.github.io/block-blitz/?spike=net
-- **下一步**：PR #16（#15 武器与移动靶）审查通过合入 → 双线并行派发收口批次：Sol 开发 M1-6（训练场端到端集成 + 第一人称视角武器模型 + 弹道/命中火花特效）+ Neon 开发 M1-7（碰撞/控制器/武器/移动靶交叉验证单测）→ M1 里程碑验收上线 → 请产品负责人真机试玩训练场
+- **下一步**：#17 与 #18 审查通过合入 `main` 并触发 GitHub Pages 自动部署 → Carbon（`gemini-4-carbon`）执行 M1 里程碑集成验收 → 请产品负责人电脑 + 手机真机试玩训练场
 
 ## 进行中
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #15 | [M1] 武器框架（爆能枪 + 平底锅）与训练场移动靶模拟（M1-4） | Sol（作者）/ Carbon（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-4-sol-weapons-and-targets`<br>R1 审查：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-4-carbon-review-pr16-r1` | `feat/15-weapons-and-targets` | [#16](https://github.com/daoguang1012/block-blitz/pull/16)（`8952323`，192 单测 ✅） | 🔍 Carbon（`gemini-4-carbon`）R1 审查进行中 |
+| #17 | [M1] 训练场端到端集成、第一人称视角武器模型与弹道/命中火花特效（M1-6） | Sol（`high`） | `node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-6-sol-training-ground-integration` | `feat/17-training-ground-integration` | — | 🛠️ 开发中 |
+| #18 | [M1] Block Plaza 碰撞、玩家控制器与武器/移动靶交叉验证单测（M1-7） | Neon（`high`） | `node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-7-neon-cross-verification-tests` | `test/18-m1-cross-verification` | — | 🛠️ 开发中 |
 
 ## M1 单机核心拆解计划
 
@@ -30,7 +31,7 @@
 | 里程碑 | 状态 | 验收报告 |
 |---|---|---|
 | M0 骨架 & 风险验证 | ✅ 已完成（自动化验收 + 真机 4G 跨网验证全部 PASS，RTT 41.4 ms） | [docs/M0_ACCEPTANCE.md](M0_ACCEPTANCE.md) · [docs/NET_SPIKE.md](NET_SPIKE.md) |
-| M1 单机核心 | 🔄 进行中（#7、#9、#10、#12 已合入 `main`；PR #16 审查中，仅剩最后集成） | — |
+| M1 单机核心 | 🔄 最后收口中（5/6 核心模块已合入 `main`，#17 训练场集成 + #18 交叉单测并行中） | — |
 | M2 联机 MVP | ⏳ | — |
 | M3 内容 | ⏳ | — |
 | M4 打磨 | ⏳ | — |
@@ -38,6 +39,7 @@
 
 ## 已完成（最近 10 条）
 
+- 2026-11-26 合并 PR #16（[#15] 武器框架与训练场移动靶模拟，`1780884`）：Carbon 首轮审查 `VERDICT: APPROVE`（0 Blocker / 0 Major，192 项单测通过）
 - 2026-11-26 合并 PR #14（[#12] 基础触屏输入与战斗 HUD / 暂停菜单，`9c79385`）：Neon 修复层叠上下文与禁用态后经 Carbon R2 复审 `VERDICT: APPROVE`（0 Blocker / 0 Major）
 - 2026-11-26 Sol 完成 #15（M1-4 武器框架与移动靶模拟）并提交 PR #16（`8952323`，192 项单测通过）
 - 2026-11-26 合并 PR #13（[#9] 世界碰撞、射线检测与第一人称玩家控制器，`7688fb8`）：Sol 修复 2 项碰撞/贴脸射线边界问题后经 Carbon R2 复审 `VERDICT: APPROVE`（0 Blocker / 0 Major，156 项单测通过）
