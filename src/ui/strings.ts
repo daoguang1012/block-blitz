@@ -1,4 +1,5 @@
 import type { PlayerColorId, QualityPreset } from '../config/ui';
+import type { WeaponId } from '../shared/types';
 
 export const UI_STRINGS = {
   gameTitle: 'Block Blitz',
@@ -94,5 +95,43 @@ export const UI_STRINGS = {
   orientation: {
     title: '请旋转手机至横屏游玩',
     desc: 'Block Blitz · 方块闪击 为横屏操作设计，请将手机横向握持以获得完整视野与舒适触控。',
+  },
+  weapons: {
+    blaster: '爆能枪',
+    pan: '平底锅',
+    scatter: '霰弹枪',
+    boomer: '火箭筒',
+    rail: '电磁炮',
+  } satisfies Record<WeaponId, string>,
+  hud: {
+    healthLabel: '生命',
+    armorLabel: '护甲',
+    dashLabel: '冲刺',
+    dashReady: '就绪',
+    secondsUnit: '秒',
+    ammoSeparator: '/',
+    infiniteAmmo: '∞',
+    meleeLabel: '近战',
+    reloading: '换弹中',
+    fpsLabel: 'FPS',
+    pointerLockHint: '点击画面开始瞄准 · 按 Esc 暂停',
+    weaponBarAriaLabel: '武器栏',
+    crosshairAriaLabel: '准星',
+  },
+  pause: {
+    title: '游戏已暂停',
+    subtitle: '按 Esc 或点击下方按钮继续战斗',
+    resume: '继续游戏',
+    openSettings: '游戏设置',
+    exitToMenu: '返回主菜单',
+  },
+  touch: {
+    overlayAriaLabel: '触屏控制区',
+    joystickAriaLabel: '移动摇杆',
+    fire: '开火',
+    jump: '跳跃',
+    dash: '冲刺',
+    reload: '换弹',
+    pause: '暂停',
   },
 } as const;
