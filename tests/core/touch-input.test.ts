@@ -57,6 +57,7 @@ class FakeClassList {
 class FakeStyle {
   readonly props = new Map<string, string>();
   touchAction = '';
+  pointerEvents = '';
   minWidth = '';
   minHeight = '';
   left = '';
@@ -252,7 +253,14 @@ function createHarness(options?: {
       dash: '冲刺',
       reload: '换弹',
       pause: '暂停',
-      weaponSlots: ['爆能枪', '平底锅', '霰弹枪'],
+      weaponSlots: ['爆能枪', '平底锅', ''],
+      weaponNames: {
+        blaster: '爆能枪',
+        pan: '平底锅',
+        scatter: '霰弹枪',
+        boomer: '火箭筒',
+        rail: '电磁炮',
+      },
     },
     onPause,
   });
@@ -519,20 +527,63 @@ describe('TouchInput', () => {
     // Consumed after one sample
     expect(h.sample()).toEqual(createInputState());
 
-    // Syncing weapon slots enables slot 2 and highlights active slot
+    // Syncing weapon slots enables slot 2, highlights active slot, and updates label via weaponNames
     h.touch.setWeaponSlots(['blaster', 'pan', 'scatter'], 2);
     expect(h.weaponButtons[2].hasAttribute('hidden')).toBe(false);
     expect(h.weaponButtons[2].disabled).toBe(false);
     expect(h.weaponButtons[2].classList.contains('is-active')).toBe(true);
     expect(h.weaponButtons[0].classList.contains('is-active')).toBe(false);
+    expect(h.weaponButtons[2].textContent).toBe('霰弹枪');
+    expect(h.weaponButtons[2].getAttribute('aria-label')).toBe('霰弹枪');
+
+    // Swapping picked-up weapon updates slot 2 label automatically
+    h.touch.setWeaponSlots(['blaster', 'pan', 'boomer'], 2);
+    expect(h.weaponButtons[2].textContent).toBe('火箭筒');
+    expect(h.weaponButtons[2].getAttribute('aria-label')).toBe('火箭筒');
 
     h.down(h.weaponButtons[2], { pointerId: 15 });
     expect(h.sample().weaponSlot).toBe(2);
 
-    // Pause button invokes callback and leaves InputState clean
+    // Pause button: pointerdown fires once and subsequent pointer click (detail >= 1) does not double-fire even after reset()
     h.down(h.pauseButton, { pointerId: 16 });
+    h.touch.reset();
+    h.pauseButton.dispatchEvent(
+      Object.assign(new Event('click', { cancelable: true }), { detail: 1 }),
+    );
     expect(h.onPause).toHaveBeenCalledTimes(1);
     expect(h.sample()).toEqual(createInputState());
+
+    // Keyboard activation on pause button (click with detail === 0) triggers onPause
+    h.pauseButton.dispatchEvent(
+      Object.assign(new Event('click', { cancelable: true }), { detail: 0 }),
+    );
+    expect(h.onPause).toHaveBeenCalledTimes(2);
+    expect(h.sample()).toEqual(createInputState());
+  });
+
+  it('toggles disabled class and pointer-events when setEnabled changes and resets active input', () => {
+    const h = createHarness();
+    h.down(h.surface, { pointerId: 1, clientX: 100, clientY: 200 });
+    h.move({ pointerId: 1, clientX: 200, clientY: 200 });
+    h.down(h.fireButton, { pointerId: 2, clientX: 700, clientY: 320 });
+
+    h.touch.setEnabled(false);
+    expect(h.root.classList.contains('is-disabled')).toBe(true);
+    expect(h.surface.style.pointerEvents).toBe('none');
+    expect(h.sample()).toEqual(createInputState());
+
+    // Inputs while disabled are ignored
+    h.down(h.fireButton, { pointerId: 3, clientX: 700, clientY: 320 });
+    h.down(h.pauseButton, { pointerId: 4 });
+    expect(h.onPause).not.toHaveBeenCalled();
+    expect(h.sample()).toEqual(createInputState());
+
+    // Re-enabling restores interactivity and clears disabled state
+    h.touch.setEnabled(true);
+    expect(h.root.classList.contains('is-disabled')).toBe(false);
+    expect(h.surface.style.pointerEvents).toBe('');
+    h.down(h.fireButton, { pointerId: 5, clientX: 700, clientY: 320 });
+    expect(h.sample().fire).toBe(true);
   });
 
   it('clears active inputs on pointercancel, window blur, and document hidden', () => {

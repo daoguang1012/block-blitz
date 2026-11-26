@@ -36,5 +36,6 @@ export function createTouchControlLabels(
       UI_STRINGS.weapons[slots[1]],
       slots[2] ? UI_STRINGS.weapons[slots[2]] : '',
     ],
+    weaponNames: UI_STRINGS.weapons,
   };
 }

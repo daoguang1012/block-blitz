@@ -26,6 +26,7 @@ export interface TouchControlLabels {
   reload: string;
   pause: string;
   weaponSlots: readonly [string, string, string];
+  weaponNames?: Partial<Record<WeaponId, string>>;
 }
 
 export interface TouchInputOptions {
@@ -166,8 +167,8 @@ export class TouchInput implements InputSource {
   private jumpPointerId: number | null = null;
   private dashPointerId: number | null = null;
   private reloadPointerId: number | null = null;
-  private pauseTriggeredByPointer = false;
 
+  private readonly weaponNames: Partial<Record<WeaponId, string>>;
   private slots: [WeaponId, WeaponId, WeaponId | null];
   private activeSlot: WeaponSlot;
 
@@ -198,7 +199,9 @@ export class TouchInput implements InputSource {
       reload: options.labels?.reload ?? DEFAULT_LABELS.reload,
       pause: options.labels?.pause ?? DEFAULT_LABELS.pause,
       weaponSlots: options.labels?.weaponSlots ?? DEFAULT_LABELS.weaponSlots,
+      weaponNames: options.labels?.weaponNames,
     };
+    this.weaponNames = labels.weaponNames ? { ...labels.weaponNames } : {};
 
     const initialSlots = options.weaponSlots ?? DEFAULT_WEAPON_SLOTS;
     this.slots = [initialSlots[0], initialSlots[1], initialSlots[2]];
@@ -394,6 +397,8 @@ export class TouchInput implements InputSource {
       return;
     }
     this.enabled = enabled;
+    this.element.classList.toggle('is-disabled', !enabled);
+    this.surface.style.pointerEvents = enabled ? '' : 'none';
     if (!enabled) {
       this.reset();
     }
@@ -498,7 +503,6 @@ export class TouchInput implements InputSource {
     this.moveX = 0;
     this.moveY = 0;
     this.fireHeld = false;
-    this.pauseTriggeredByPointer = false;
     resetInputState(this.pending);
     this.hideJoystick();
     this.fireButton.classList.remove('is-pressed');
@@ -592,6 +596,15 @@ export class TouchInput implements InputSource {
       if (occupied) {
         button.removeAttribute('hidden');
         button.setAttribute('data-weapon-id', weaponId);
+        const mappedName = this.weaponNames[weaponId];
+        if (mappedName !== undefined) {
+          button.textContent = mappedName;
+          if (mappedName) {
+            button.setAttribute('aria-label', mappedName);
+          } else {
+            button.removeAttribute('aria-label');
+          }
+        }
       } else {
         button.setAttribute('hidden', '');
         button.removeAttribute('data-weapon-id');
@@ -845,17 +858,12 @@ export class TouchInput implements InputSource {
       return;
     }
     event.preventDefault();
-    this.pauseTriggeredByPointer = true;
     this.onPause?.();
   };
 
   private readonly onPauseClick = (event: MouseEvent): void => {
     event.stopPropagation();
-    if (this.pauseTriggeredByPointer) {
-      this.pauseTriggeredByPointer = false;
-      return;
-    }
-    if (!this.active) {
+    if (!this.active || event.detail !== 0) {
       return;
     }
     this.onPause?.();

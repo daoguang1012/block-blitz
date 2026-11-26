@@ -19,9 +19,8 @@
  * ========================================================================== */
 
 .bb-hud {
-  position: fixed;
-  inset: 0;
-  z-index: 25;
+  width: 0;
+  height: 0;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
@@ -30,6 +29,7 @@
 .bb-hud-layer {
   position: fixed;
   inset: 0;
+  z-index: 25;
   pointer-events: none;
 }
 
@@ -504,15 +504,21 @@
   display: none;
 }
 
+.bb-touch-layer.is-disabled,
+.bb-touch-layer.is-disabled .bb-touch-surface,
+.bb-touch-layer.is-disabled .bb-touch-btn {
+  pointer-events: none;
+}
+
 .bb-touch-surface {
-  position: fixed;
+  position: absolute;
   inset: 0;
   pointer-events: auto;
   touch-action: none;
 }
 
 .bb-touch-joystick {
-  position: fixed;
+  position: absolute;
   width: var(--bb-touch-joystick-size, 128px);
   height: var(--bb-touch-joystick-size, 128px);
   transform: translate(-50%, -50%);

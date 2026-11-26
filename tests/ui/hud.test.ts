@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { HUD_CONFIG } from '../../src/config/ui';
 import { EventBus } from '../../src/core/events';
 import type { CombatEvents, HudState } from '../../src/shared/types';
-import { createBattleHud } from '../../src/ui/hud';
+import { createBattleHud, createTouchControlLabels } from '../../src/ui/hud';
 import { UI_STRINGS } from '../../src/ui/strings';
 
 class FakeClassList {
@@ -555,5 +555,47 @@ describe('BattleHud & PauseOverlay', () => {
     );
     expect(onPause).not.toHaveBeenCalled();
     expect(onResume).not.toHaveBeenCalled();
+  });
+
+  it('keeps pause overlay above touch layer in shared stacking context and provides full weaponNames for touch labels', async () => {
+    const fsModule = 'node:fs/promises';
+    const fs = (await import(/* @vite-ignore */ fsModule)) as {
+      readFile: (path: URL, encoding: 'utf8') => Promise<string>;
+    };
+    const css = await fs.readFile(
+      new URL('../../src/styles/hud.css', import.meta.url),
+      'utf8',
+    );
+    const readBlock = (selector: string): string => {
+      const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const match = css.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
+      expect(match, `Missing CSS rule for ${selector}`).not.toBeNull();
+      return match![1];
+    };
+
+    const hudRootRule = readBlock('.bb-hud');
+    expect(hudRootRule).not.toMatch(/z-index\s*:/);
+    expect(hudRootRule).not.toMatch(/position\s*:\s*fixed/);
+    expect(hudRootRule).toMatch(/pointer-events\s*:\s*none/);
+
+    const hudLayerZ = Number(
+      readBlock('.bb-hud-layer').match(/z-index\s*:\s*(\d+)/)?.[1],
+    );
+    const touchLayerZ = Number(
+      readBlock('.bb-touch-layer').match(/z-index\s*:\s*(\d+)/)?.[1],
+    );
+    const pauseBackdropZ = Number(
+      readBlock('.bb-pause-backdrop').match(/z-index\s*:\s*(\d+)/)?.[1],
+    );
+    expect(hudLayerZ).toBeLessThan(touchLayerZ);
+    expect(touchLayerZ).toBeLessThan(pauseBackdropZ);
+
+    expect(css).toMatch(
+      /\.bb-touch-layer\.is-disabled[\s\S]*?\.bb-touch-surface[\s\S]*?pointer-events\s*:\s*none/,
+    );
+    expect(readBlock('.bb-touch-joystick')).toMatch(/position\s*:\s*absolute/);
+
+    const labels = createTouchControlLabels();
+    expect(labels.weaponNames).toEqual(UI_STRINGS.weapons);
   });
 });
