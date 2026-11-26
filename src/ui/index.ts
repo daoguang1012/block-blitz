@@ -17,7 +17,7 @@ import {
   type PlayerProfile,
 } from './storage';
 import { UI_STRINGS } from './strings';
-import { createTrainShellView } from './train/train-shell';
+import { createTrainShellView, type TrainShellView } from './train/train-shell';
 
 function createPortraitGuard(): {
   element: HTMLElement;
@@ -96,9 +96,13 @@ function createPortraitGuard(): {
   };
 }
 
-export function initUI(root: HTMLElement): { destroy(): void } {
+export function initUI(
+  root: HTMLElement,
+  options: { sceneRoot: HTMLElement; onRouteChange: (route: AppRoute) => void },
+): { destroy(): void } {
   const storage = resolveStorage();
-  const defaultSettings = getDefaultGameSettings(detectTouchDevice());
+  const isTouch = detectTouchDevice();
+  const defaultSettings = getDefaultGameSettings(isTouch);
   let profile: PlayerProfile = loadPlayerProfile(storage);
   let settings: GameSettings = loadGameSettings(storage, defaultSettings);
   const storageAvailable = storage !== null;
@@ -116,28 +120,34 @@ export function initUI(root: HTMLElement): { destroy(): void } {
   });
 
   const router = createHashRouter(window);
+  let activeView: UIView | null = null;
+  let activeTraining: TrainShellView | null = null;
   const settingsModal = createSettingsModal({
     initialSettings: settings,
     backgroundElements: [stage, versionBadge],
     onChange(next) {
       const result = saveGameSettings(next, storage, defaultSettings);
       settings = result.settings;
+      activeTraining?.setSettings(settings);
       return settings;
     },
     onReset() {
       const result = resetGameSettings(storage, defaultSettings);
       settings = result.settings;
+      activeTraining?.setSettings(settings);
       return settings;
     },
   });
   const portraitGuard = createPortraitGuard();
 
-  let activeView: UIView | null = null;
-
   function renderRoute(route: AppRoute): void {
+    settingsModal.close();
     activeView?.destroy();
     activeView = null;
+    activeTraining = null;
     stage.replaceChildren();
+    versionBadge.style.display = route.name === 'train' ? 'none' : '';
+    options.onRouteChange(route);
 
     switch (route.name) {
       case 'home': {
@@ -167,18 +177,24 @@ export function initUI(root: HTMLElement): { destroy(): void } {
       }
 
       case 'train': {
-        settingsModal.close();
-        activeView = createTrainShellView({
-          profile,
+        activeTraining = createTrainShellView({
+          sceneRoot: options.sceneRoot,
+          controlsRoot: stage,
+          settings,
+          isTouch,
+          isPortraitBlocked: () =>
+            portraitGuard.element.classList.contains('is-visible'),
+          isEscapeBlocked: settingsModal.isOpen,
+          onOpenSettings: settingsModal.open,
           onBackToMenu() {
             router.navigate({ name: 'home' });
           },
         });
+        activeView = activeTraining;
         break;
       }
 
       case 'room': {
-        settingsModal.close();
         activeView = createRoomShellView({
           roomCode: route.code,
           profile,
@@ -210,6 +226,7 @@ export function initUI(root: HTMLElement): { destroy(): void } {
       router.destroy();
       activeView?.destroy();
       activeView = null;
+      activeTraining = null;
       settingsModal.destroy();
       portraitGuard.destroy();
       uiContainer.remove();

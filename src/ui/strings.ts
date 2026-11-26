@@ -40,11 +40,9 @@ export const UI_STRINGS = {
       '请输入 4 位有效房间码（仅支持 2–9 与不含 O / I / L 的字母）',
   },
   train: {
-    badge: '单人训练场',
     title: '方块训练场',
-    placeholderNotice:
-      'M1 阶段将接入单机训练场核心（移动、跳跃、冲刺、爆能枪、平底锅与移动靶），当前为路由与菜单外壳占位。',
-    currentProfileLabel: '当前出战角色',
+    loading: '正在载入方块广场…',
+    loadFailed: '无法启动训练场。请返回主菜单后重试。',
     backToMenu: '返回主菜单',
   },
   room: {

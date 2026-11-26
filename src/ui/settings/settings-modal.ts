@@ -18,6 +18,7 @@ export interface SettingsModalOptions {
 
 export interface SettingsModalController {
   readonly element: HTMLElement;
+  isOpen(): boolean;
   open(): void;
   close(): void;
   destroy(): void;
@@ -417,11 +418,13 @@ export function createSettingsModal(
 
     if (event.key === 'Escape') {
       event.preventDefault();
+      event.stopImmediatePropagation();
       close();
       return;
     }
 
     if (event.key === 'Tab') {
+      event.stopImmediatePropagation();
       const focusables = getFocusableElements();
       if (focusables.length === 0) {
         event.preventDefault();
@@ -482,6 +485,7 @@ export function createSettingsModal(
 
   return {
     element: backdrop,
+    isOpen: () => isOpen,
     open,
     close,
     destroy(): void {

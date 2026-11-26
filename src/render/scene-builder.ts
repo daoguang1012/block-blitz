@@ -306,7 +306,11 @@ export function buildMapScene(
 
   function applyQuality(nextQuality: QualityPreset): void {
     if (disposed) return;
+    const hadShadows = directionalLight.castShadow;
     configureDirectionalLightShadow(directionalLight, map, nextQuality);
+    if (!hadShadows && directionalLight.castShadow) {
+      for (const material of disposableMaterials) material.needsUpdate = true;
+    }
   }
 
   function dispose(): void {
