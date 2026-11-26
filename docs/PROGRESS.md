@@ -12,8 +12,8 @@
 
 | Issue | 任务 | 负责 | taskId | 分支 | PR | 状态 |
 |---|---|---|---|---|---|---|
-| #17 | [M1] 训练场端到端集成、第一人称视角武器模型与弹道/命中火花特效（M1-6） | Sol（`high`） | `node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-6-sol-training-ground-integration` | `feat/17-training-ground-integration` | — | 🛠️ 开发中 |
-| #18 | [M1] Block Plaza 碰撞、玩家控制器与武器/移动靶交叉验证单测（M1-7） | Neon（`high`） | `node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-7-neon-cross-verification-tests` | `test/18-m1-cross-verification` | — | 🛠️ 开发中 |
+| #17 | [M1] 训练场端到端集成、第一人称视角武器模型与弹道/命中火花特效（M1-6） | Sol（`high`） | `node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Athread-send%3Am1-6-sol-resume-after-400` | `feat/17-training-ground-integration` | — | 🛠️ 开发中 |
+| #18 | [M1] Block Plaza 碰撞、玩家控制器与武器/移动靶交叉验证单测（M1-7） | Neon（作者）/ Carbon（审查） | 作者线程：`thread:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-7-neon-cross-verification-tests`<br>R1 审查：`node:delegated-task:command%3Amcp%3A07bcebdf-751a-412e-beb0-aa84d287dad5%3Adelegate-task%3Am1-7-carbon-review-pr19-r1` | `test/18-m1-cross-verification` | [#19](https://github.com/daoguang1012/block-blitz/pull/19)（`d8329a6`，222 单测 ✅） | 🔍 实景测试确认 6 段楼梯与双跳板抛物线全部达标零缺陷，Carbon R1 审查中 |
 
 ## M1 单机核心拆解计划
 
